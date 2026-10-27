@@ -11,7 +11,7 @@ const readJson=async name=>JSON.parse(await fs.readFile(path.join(root,name),'ut
 const manifest=await readJson('plugin.json'),pkg=await readJson('package.json'),compat=await readJson('.codex-plugin/plugin.json');
 if(manifest.name!=='codex-work-layout'||pkg.version!==manifest.version||compat.version!==manifest.version)throw Error('Plugin identity or versions do not match.');
 const platform=packagePlatform();
-const required=[...platform.required,'dist/server/index.js','dist/ui/index.html','dist/ui/pdf.html','dist/whiteboard/index.html','vendor/research/runtime/wiki.cjs','vendor/zotero-reader/runtime/reader-local.html','src/server/index.ts','README.md','LICENSE','NOTICE.md'];
+const required=[...platform.required,'dist/server/index.js','dist/ui/index.html','dist/ui/pdf.html','dist/whiteboard/index.html','vendor/research/runtime/wiki.cjs','vendor/zotero-reader/runtime/reader-local.html','vendor/zotero-reader/source/reader/src/pdf/pdf-view.js','vendor/zotero-reader/source/reader/package.json','vendor/zotero-reader/COPYING','vendor/pdf-worker/COPYING','src/server/index.ts','README.md','LICENSE','NOTICE.md',...['pages-preview','pdf-reader','pdfai-context','wiki-ingest','wiki-init','wiki-lint','wiki-query','wiki-save','work-layout'].map(name=>`skills/${name}/SKILL.md`)];
 for(const name of required)if(!(await fs.stat(path.join(root,name))).isFile())throw Error('Missing runtime/source file: '+name);
 const archiveRoot=`artinfact-${pkg.version}-windows-x64`;
 const prefix=`${archiveRoot}/plugins/${manifest.name}/`;

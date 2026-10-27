@@ -1,0 +1,519 @@
+.outline-view {
+	padding: 4px 8px;
+	outline: none;
+
+	.ai-insights-outline {
+		margin: 9px 0 4px;
+		border: 1px solid rgba(39, 142, 232, .32);
+		border-radius: 6px;
+		background: rgba(39, 142, 232, .055);
+		overflow: hidden;
+	}
+
+	.ai-outline-notes-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 6px;
+		min-height: 28px;
+		margin: 2px 0 5px;
+		padding: 3px 5px 3px 8px;
+		border: 1px solid rgba(15, 118, 110, .28);
+		border-radius: 6px;
+		background: rgba(15, 118, 110, .055);
+	}
+
+	.ai-outline-notes-title {
+		display: inline-flex;
+		align-items: center;
+		gap: 5px;
+		font-size: .6875rem;
+		font-weight: 600;
+		color: var(--fill-primary);
+	}
+
+	.ai-outline-notes-count {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 16px;
+		height: 16px;
+		padding: 0 4px;
+		border-radius: 8px;
+		background: #0F766E;
+		color: #fff;
+		font-size: .625rem;
+		font-variant-numeric: tabular-nums;
+	}
+
+	.ai-outline-notes-clear {
+		border: 0;
+		border-radius: 3px;
+		padding: 3px 6px;
+		background: transparent;
+		color: var(--fill-secondary);
+		font-size: .625rem;
+		line-height: 1;
+		cursor: pointer;
+
+		&:hover,
+		&:focus-visible {
+			background: rgba(15, 118, 110, .12);
+			color: #0F766E;
+			outline: none;
+		}
+	}
+
+	// This header is used only when the PDF has no native bookmarks. The tree
+	// below it comes from MinerU JSON and remains separate from PDF bookmarks.
+	.ai-navigation-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 6px;
+		min-height: 28px;
+		margin: 2px 0 5px;
+		padding: 3px 5px 3px 8px;
+		border: 1px solid rgba(13, 148, 136, .3);
+		border-radius: 6px;
+		background: rgba(13, 148, 136, .06);
+	}
+
+	.ai-navigation-title {
+		display: inline-flex;
+		align-items: center;
+		gap: 5px;
+		min-width: 0;
+		color: var(--fill-primary);
+		font-size: .6875rem;
+		font-weight: 600;
+	}
+
+	.ai-navigation-count {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 16px;
+		height: 16px;
+		padding: 0 4px;
+		border-radius: 8px;
+		background: #0D9488;
+		color: #fff;
+		font-size: .625rem;
+		font-variant-numeric: tabular-nums;
+	}
+
+	.ai-navigation-clear {
+		border: 0;
+		border-radius: 3px;
+		padding: 3px 6px;
+		background: transparent;
+		color: var(--fill-secondary);
+		font-size: .625rem;
+		line-height: 1;
+		cursor: pointer;
+
+		&:hover,
+		&:focus-visible {
+			background: rgba(13, 148, 136, .12);
+			color: #0F766E;
+			outline: none;
+		}
+	}
+
+	.ai-navigation-empty {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		min-height: 30px;
+		margin: 2px 0 6px;
+		padding: 3px 5px 3px 8px;
+		border-bottom: 1px solid rgba(13, 148, 136, .16);
+	}
+
+	.ai-navigation-empty-title {
+		display: inline-flex;
+		align-items: center;
+		gap: 5px;
+		min-width: 0;
+		color: var(--fill-secondary);
+		font-size: .6875rem;
+		font-weight: 500;
+
+		svg {
+			width: 14px;
+			height: 14px;
+			opacity: .72;
+		}
+	}
+
+	.ai-navigation-generate {
+		min-height: 24px;
+		border: 0;
+		border-radius: 4px;
+		padding: 3px 6px;
+		background: transparent;
+		color: #0F766E;
+		font: inherit;
+		font-size: .6875rem;
+		font-weight: 500;
+		cursor: pointer;
+
+		&:hover:not(:disabled),
+		&:focus-visible {
+			background: rgba(13, 148, 136, .12);
+			outline: none;
+		}
+
+		&:disabled {
+			cursor: wait;
+			opacity: .62;
+		}
+	}
+
+	.ai-insights-outline-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 6px;
+		min-height: 28px;
+		padding: 3px 5px 3px 8px;
+		background: rgba(39, 142, 232, .11);
+	}
+
+	.ai-insights-toggle {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+		min-width: 0;
+		border: 0;
+		padding: 3px 0;
+		background: transparent;
+		color: var(--fill-primary);
+		font: inherit;
+		text-align: start;
+		cursor: pointer;
+
+		&:hover,
+		&:focus-visible {
+			color: #1D75B8;
+			outline: none;
+		}
+	}
+
+	.ai-insights-toggle-icon {
+		width: 12px;
+		height: 12px;
+		color: #278EE8;
+		transition: transform .15s ease;
+
+		&.collapsed {
+			transform: rotate(-90deg);
+		}
+	}
+
+	.ai-insights-outline-title {
+		display: inline-flex;
+		align-items: center;
+		gap: 5px;
+		font-size: .6875rem;
+		font-weight: 600;
+		color: var(--fill-primary);
+	}
+
+	.ai-insights-outline-count {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 16px;
+		height: 16px;
+		padding: 0 4px;
+		border-radius: 8px;
+		background: #278EE8;
+		color: #fff;
+		font-size: .625rem;
+		font-variant-numeric: tabular-nums;
+	}
+
+	.ai-insights-clear {
+		border: 0;
+		border-radius: 3px;
+		padding: 3px 6px;
+		background: transparent;
+		color: var(--fill-secondary);
+		font-size: .625rem;
+		line-height: 1;
+		cursor: pointer;
+
+		&:hover,
+		&:focus-visible {
+			background: rgba(39, 142, 232, .12);
+			color: #1D75B8;
+			outline: none;
+		}
+	}
+
+	.ai-insights-outline-list {
+		margin: 0;
+		padding: 2px 3px 3px;
+		list-style: none;
+	}
+
+	.ai-insight-section {
+		margin: 0;
+		padding: 0;
+	}
+
+	.ai-insight-section + .ai-insight-section {
+		border-top: 1px solid rgba(39, 142, 232, .18);
+	}
+
+	.ai-insight-section-title {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 6px;
+		padding: 5px 8px 2px;
+		color: #278EE8;
+		font-size: .625rem;
+		font-weight: 600;
+	}
+
+	.ai-insight-section.innovation .ai-insight-section-title {
+		color: #E28A13;
+	}
+
+	.ai-insight-section-count {
+		font-variant-numeric: tabular-nums;
+	}
+
+	.ai-insight-outline-item {
+		margin: 0;
+		padding: 0;
+	}
+
+	.ai-insight-outline-button {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr) auto;
+		align-items: center;
+		gap: 5px;
+		width: 100%;
+		border: 0;
+		border-radius: 4px;
+		padding: 5px;
+		background: transparent;
+		color: var(--fill-primary);
+		font: inherit;
+		font-size: .65625rem;
+		line-height: 1.25;
+		text-align: start;
+		cursor: pointer;
+
+		&:hover,
+		&:focus-visible,
+		&.selected {
+			background: rgba(39, 142, 232, .1);
+			outline: none;
+		}
+
+		&.selected {
+			box-shadow: inset 2px 0 0 #278EE8;
+		}
+
+	}
+
+	.ai-insight-outline-kind {
+		width: 6px;
+		height: 6px;
+		border-radius: 50%;
+		background: #278EE8;
+		box-shadow: 0 0 0 1px rgba(39, 142, 232, .2);
+
+		&.innovation {
+			background: #E28A13;
+			box-shadow: 0 0 0 1px rgba(226, 138, 19, .2);
+		}
+	}
+
+	.ai-insight-outline-text {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.ai-insight-outline-page {
+		color: var(--fill-secondary);
+		font-size: .59375rem;
+		white-space: nowrap;
+	}
+
+	.outline-loading {
+		display: flex;
+		justify-content: center;
+		padding: 16px 0;
+	}
+
+	ul {
+		li {
+			list-style: none;
+
+			.item {
+				display: flex;
+				align-items: flex-start;
+				scroll-margin-top: 5px;
+				scroll-margin-bottom: 5px;
+
+				.outline-item-content {
+					min-width: 0;
+					flex: 1 1 auto;
+				}
+
+				.title {
+					text-decoration: none;
+					display: block;
+					height: auto;
+					font-size: .6875rem;
+					line-height: 1.2;
+					-moz-user-select: none;
+					user-select: none;
+					white-space: normal;
+					padding: 0.21875rem;
+					cursor: pointer;
+				}
+
+				.ai-outline-annotation {
+					display: block;
+					width: calc(100% - .4375rem);
+					border: 0;
+					margin: -1px .21875rem .21875rem;
+					padding: 0;
+					background: transparent;
+					color: var(--fill-secondary);
+					font: inherit;
+					font-size: .625rem;
+					line-height: 1.3;
+					text-align: start;
+					white-space: normal;
+					word-break: break-word;
+					cursor: pointer;
+
+					&:hover,
+					&:focus-visible {
+						color: var(--accent-blue50);
+						outline: none;
+					}
+				}
+
+				.ai-outline-points {
+					margin: -1px .21875rem .25rem 1rem;
+					padding: 0;
+					color: var(--fill-secondary);
+					font-size: .59375rem;
+					line-height: 1.3;
+
+					li {
+						position: relative;
+						margin: 1px 0;
+						padding-inline-start: 7px;
+
+						&::before {
+							content: '';
+							position: absolute;
+							inset-inline-start: 0;
+							top: .42em;
+							width: 3px;
+							height: 3px;
+							border-radius: 50%;
+							background: var(--fill-secondary);
+						}
+					}
+				}
+
+				&.active .title {
+					outline: 3px solid var(--accent-blue50);
+					border-radius: 5px;
+				}
+
+				.toggle {
+					height: 1.25rem;
+					width: 9px;
+					flex-shrink: 0;
+					color: var(--fill-secondary);
+					display: flex;
+					align-items: center;
+					margin-inline-end: 3px;
+					margin-inline-start: 3px;
+				}
+
+				&.unmatched {
+					color: var(--fill-secondary);
+				}
+
+				&.expandable:not(.expanded) .toggle {
+					html[dir='ltr'] & {
+						transform: rotate(-90deg);
+					}
+
+					html[dir='rtl'] & {
+						transform: rotate(90deg);
+					}
+				}
+			}
+
+			.children {
+				padding-inline-start: 16px;
+			}
+		}
+	}
+}
+
+.outline-view.loading {
+	display: flex;
+	height: 100%;
+	align-items: center;
+	justify-content: center;
+	.spinner {
+		width: 40px;
+		height: 40px;
+		border: 4px solid #f3f3f3;
+		border-top: 4px solid #7e7e7e;
+		border-radius: 50%;
+		animation: spin1 1.5s linear infinite;
+	}
+}
+
+@keyframes spin1 {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+}
+
+// Share the PDF sidebar preference with native outline, MinerU navigation, AI notes, and AI insights.
+.outline-view {
+	font-size: var(--annotation-sidebar-font-size, 14px);
+
+	ul li .item .title,
+	.ai-insight-outline-button {
+		font-size: var(--annotation-sidebar-font-size, 14px);
+		line-height: 1.35;
+	}
+
+	ul li .item .ai-outline-annotation,
+	ul li .item .ai-outline-points,
+	.ai-outline-notes-title,
+	.ai-outline-notes-clear,
+	.ai-navigation-title,
+	.ai-navigation-clear,
+	.ai-navigation-empty-title,
+	.ai-navigation-generate,
+	.ai-insights-outline-title,
+	.ai-insights-clear,
+	.ai-insight-outline-kind,
+	.ai-insight-outline-page {
+		font-size: var(--annotation-sidebar-meta-font-size, 12px);
+	}
+
+	ul li .item .ai-outline-annotation,
+	ul li .item .ai-outline-points {
+		line-height: 1.45;
+	}
+}

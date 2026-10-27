@@ -1,0 +1,7 @@
+[submodule "pdfjs/pdf.js"]
+	path = pdfjs/pdf.js
+	url = https://github.com/zotero/pdf.js.git
+
+[submodule "epubjs/epub.js"]
+	path = epubjs/epub.js
+	url = https://github.com/zotero/epub.js.git
