@@ -1,0 +1,55 @@
+import {gzipSync} from 'node:zlib';
+import { build } from 'esbuild';
+import {uiLanguagePlugin} from './ui-language.mjs';
+import {milkdownSlashPlugin} from './milkdown-slash.mjs';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import {spellStyles} from './spell-css.mjs';
+import {noteUiStyles} from './note-ui-css.mjs';
+import {katexStyles} from './katex-css.mjs';
+import {uiAffordancesStyles} from './ui-affordances-css.mjs';
+const releaseManifest=JSON.parse(await readFile('plugin.json','utf8'));
+const packageManifest=JSON.parse(await readFile('package.json','utf8'));
+if(packageManifest.version!==releaseManifest.version)throw Error('Plugin and package versions differ');
+await writeFile('src/shared/version.ts',`export const PLUGIN_VERSION = ${JSON.stringify(releaseManifest.version)};\n`);
+const debug = process.env.CODEX_PLUGIN_DEBUG === '1';
+const browserOptions = { minify: !debug, sourcemap: debug ? 'inline' : false,plugins:[milkdownSlashPlugin(),uiLanguagePlugin()] };
+const noteStyles=await noteUiStyles()+await katexStyles()+await uiAffordancesStyles();
+
+await mkdir('dist/ui', { recursive: true });
+const spellCss=await spellStyles();
+await writeFile('dist/ui/spell.css',spellCss);
+await import('./build-mineru.mjs');
+await import('./build-research.mjs');
+await import('./build-whiteboard.mjs');
+await import('./build-translation.mjs');
+await build({ entryPoints: ['src/ui/app.ts'], bundle: true, outfile: 'dist/ui/app.js', platform: 'browser', target: 'es2022', format: 'esm', ...browserOptions, legalComments: 'none' });
+const template = await readFile('src/ui/index.html', 'utf8');
+const js = (await readFile('dist/ui/app.js', 'utf8')).replaceAll('</script', '<\\/script');
+const css = spellCss+(await readFile('dist/ui/app.css', 'utf8'))+noteStyles;
+await writeFile('dist/ui/index.html', template.replace('<!--APP_STYLE-->', () => `<style>${css}</style>`).replace('<!--APP_SCRIPT-->', () => `<script type="module">${js}</script>`));
+await build({ entryPoints: ['src/ui/pdf.ts'], bundle: true, outfile: 'dist/ui/pdf.js', platform: 'browser', target: 'es2022', format: 'esm', ...browserOptions, legalComments: 'none' });
+const pdfTemplate = await readFile('src/ui/pdf.html', 'utf8');
+const pdfJs = (await readFile('dist/ui/pdf.js', 'utf8')).replaceAll('</script', '<\\/script');
+const pdfCss = spellCss + (await readFile('dist/ui/pdf.css', 'utf8'))+noteStyles;
+await writeFile('dist/ui/pdf.html', pdfTemplate.replace('<!--APP_STYLE-->', () => `<style>${pdfCss}</style>`).replace('<!--APP_SCRIPT-->', () => `<script type="module">${pdfJs}</script>`));
+await build({ entryPoints: ['src/ui/reader-adapter.ts'], bundle: true, outfile: 'vendor/zotero-reader/runtime/codex-adapter.js', platform: 'browser', target: 'es2022', format: 'iife', ...browserOptions, legalComments: 'none' });
+const readerTemplate = await readFile('vendor/zotero-reader/source/reader/index.reader.html', 'utf8');
+// Keep the original iframe structure and full annotation UI; hide reference-project services without a Codex backend.
+const originalReader = '<!DOCTYPE html>\n<html lang="zh-CN" dir="ltr" style="--sidebar-width: 240px; --split-view-size: 50%; --bottom-placeholder-height: 0px; --toolbar-placeholder-width: 0px"><head><meta charset="UTF-8"><title>PDF 阅读器</title><script src="codex-adapter.js"></script><script defer src="reader.js"></script><link href="reader.css" rel="stylesheet"><style>#read-aloud,.document-translation{display:none!important}</style></head><body class="sidebar-open"><div id="reader-ui"></div><div id="split-view"><div id="primary-view" class="primary-view"></div><div id="secondary-view" class="secondary-view"></div></div><div id="printContainer"></div></body></html>';
+if (!readerTemplate.includes('primary-view')) throw new Error('Unsupported reference reader template');
+await writeFile('vendor/zotero-reader/runtime/reader.html', originalReader);
+await import('./build-reader.mjs');
+await build({ entryPoints: ['src/server/pdf-metadata-worker.ts'], bundle: true, outfile: 'dist/server/pdf-metadata-worker.js', platform: 'node', target: 'node22', format: 'esm', minify: true, legalComments: 'none' });
+await build({ entryPoints: ['src/server/pdf-metrics-worker.ts'], bundle: true, outfile: 'dist/server/pdf-metrics-worker.js', platform: 'node', target: 'node22', format: 'esm', minify: true, legalComments: 'none' });
+await build({ entryPoints: ['src/server/pdf-export-worker.ts'], bundle: true, outfile: 'dist/server/pdf-export-worker.js', platform: 'node', target: 'node22', format: 'esm', minify: true, legalComments: 'none' });
+await build({ entryPoints: ['src/server/pdf-split-worker.ts'], bundle: true, outfile: 'dist/server/pdf-split-worker.js', platform: 'node', target: 'node22', format: 'esm', minify: true, legalComments: 'none' });
+await build({ entryPoints: ['src/server/pdf-evidence-worker.ts'], bundle: true, outfile: 'dist/server/pdf-evidence-worker.js', platform: 'node', target: 'node22', format: 'esm', minify: true, legalComments: 'none' });
+await build({ entryPoints: ['src/server/pdf-citation-worker.ts'], bundle: true, outfile: 'dist/server/pdf-citation-worker.js', platform: 'node', target: 'node22', format: 'esm', minify: true, legalComments: 'none' });
+await build({ entryPoints: ['src/server/mineru-worker.ts'], bundle: true, outfile: 'dist/server/mineru-worker.js', platform: 'node', target: 'node22', format: 'esm', minify: true, legalComments: 'none' });
+await build({ entryPoints: ['src/server/mineru-batch-worker.ts'], bundle: true, outfile: 'dist/server/mineru-batch-worker.js', platform: 'node', target: 'node22', format: 'esm', minify: true, legalComments: 'none' });
+await build({ entryPoints: ['src/server/research-worker.ts'], bundle: true, outfile: 'dist/server/research-worker.js', platform: 'node', target: 'node22', format: 'esm', minify: true, legalComments: 'none' });
+await build({ entryPoints: ['src/server/index.ts'], bundle: true, outfile: 'dist/server/index.js', platform: 'node', target: 'node22', format: 'esm', minify: true, legalComments: 'none', banner: { js: 'import { createRequire as __createRequire } from "node:module"; const require = __createRequire(import.meta.url);' } });
+await build({ entryPoints: ['src/cli.ts'], bundle: true, outfile: 'dist/layouts.js', platform: 'node', target: 'node22', format: 'esm', minify: true, legalComments: 'none' });
+process.stdout.write('Built TypeScript MCP server, Sidebar App, full Zotero Reader bridge and layout CLI.\n');
+
+// The reader is warmed in bounded MCP chunks and cached by the app, keeping the first resource small.

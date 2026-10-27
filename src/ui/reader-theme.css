@@ -1,0 +1,63 @@
+/* Both reader chrome and the nested PDF viewer use the host palette. Page colors remain controlled by Zotero's rendering theme. */
+@media screen {
+  :root[data-gpt-reader] body { background:var(--gpt-reader-background); color:var(--gpt-reader-text); }
+  :root[data-gpt-reader] body #viewerContainer { background:var(--gpt-reader-background); box-shadow:none; }
+}
+.gpt-appearance{display:flex;flex-direction:column;gap:8px;width:100%}
+.gpt-appearance label{font-weight:600;margin-top:8px}
+.gpt-choices{display:flex;gap:8px}
+.gpt-choices button{flex:1;padding:10px;border:1px solid var(--color-border);border-radius:6px;background:var(--color-control);color:var(--fill-primary)}
+.gpt-choices button[aria-pressed=true]{border-color:var(--accent-blue);box-shadow:inset 0 0 0 1px var(--accent-blue)}
+.gpt-appearance p{font-size:11px;color:var(--fill-secondary);margin:0}
+.codex-mineru-ring{--mineru-progress:0%;position:relative;width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:radial-gradient(circle at center,var(--material-toolbar) 57%,transparent 58%),conic-gradient(var(--accent-blue) 0 var(--mineru-progress),var(--fill-quinary) var(--mineru-progress) 100%)}
+.codex-mineru-ring-value{font-size:7px;line-height:1;color:var(--fill-primary)}
+.codex-mineru-button[data-state=idle] .codex-mineru-ring{background:none;border:1.5px solid var(--fill-secondary);box-sizing:border-box;width:16px;height:16px}
+.codex-mineru-ring.indeterminate{background:none}.codex-mineru-ring.indeterminate:before{content:"";position:absolute;inset:0;border:2px solid var(--fill-quinary);border-top-color:var(--accent-blue);border-right-color:var(--accent-blue);border-radius:50%;animation:codex-mineru-spin 1s linear infinite}
+.codex-mineru-button[data-state=completed] .codex-mineru-ring{background:var(--accent-blue)}.codex-mineru-button[data-state=completed] .codex-mineru-ring-value{color:#fff;font-size:11px;font-weight:700}
+.codex-mineru-button[data-state=failed] .codex-mineru-ring{background:none;border:1.5px solid #d95858;box-sizing:border-box}.codex-mineru-button[data-state=failed] .codex-mineru-ring-value{color:#d95858;font-size:11px;font-weight:700}
+.codex-mineru-button[aria-expanded=true]{background:var(--fill-quinary);border-radius:4px}
+.codex-mineru-menu{position:fixed;z-index:10000;width:248px;max-width:calc(100vw - 8px);overflow:auto;box-sizing:border-box;padding:6px;border:1px solid var(--color-border);border-radius:8px;background:var(--gpt-reader-background,var(--material-toolbar));color:var(--fill-primary);box-shadow:0 6px 24px #0003;font-size:12px}
+.codex-mineru-menu-status{padding:9px 8px;color:var(--fill-secondary);line-height:1.5;min-width:0}.codex-mineru-menu-status span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.codex-mineru-menu-status[data-state=completed]{color:var(--fill-primary)}
+.codex-mineru-menu-detail{margin-left:auto;color:var(--fill-secondary);font-size:11px;white-space:nowrap}
+.codex-mineru-menu button{display:block;width:100%;text-align:left;border:0;border-radius:4px;padding:9px 8px;background:transparent;color:inherit;font:inherit;cursor:pointer}.codex-mineru-menu button:hover,.codex-mineru-menu button:focus-visible{background:var(--fill-quinary);outline:none}.codex-mineru-menu button:disabled{opacity:.4;cursor:default}
+@keyframes codex-mineru-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.codex-mineru-ring.indeterminate:before{animation:none}}
+.codex-mineru-menu .with-icon{display:flex;align-items:center;gap:8px}.codex-mineru-menu .ui-icon{width:15px;height:15px;flex-shrink:0}.codex-mineru-ring-value{display:flex;align-items:center;justify-content:center}
+
+/* Workspace PDFs share the native reader sidebar, typography and palette. */
+#sidebarContent .codex-pdf-view{display:flex;flex-direction:column;height:100%;font:inherit;color:var(--fill-primary)}
+#sidebarContent .codex-pdf-view.hidden{display:none}
+.codex-pdf-heading{display:flex;align-items:center;gap:8px;padding:12px 12px 8px;color:var(--fill-secondary);font-size:inherit;flex:none}
+.codex-pdf-heading span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.codex-pdf-list{overflow:auto;min-height:0;padding:0 6px 8px;scrollbar-width:thin}
+.codex-pdf-row{display:flex;align-items:center;border-radius:4px;min-height:34px;margin:2px 0}
+.codex-pdf-row:hover{background:var(--fill-quinary)}
+.codex-pdf-row.selected{background:var(--color-accent-10,var(--fill-quinary))}
+.codex-pdf-row button{font:inherit;color:inherit;background:transparent;border:0;cursor:pointer}
+.codex-pdf-open{display:flex;align-items:center;gap:8px;min-width:0;flex:1;text-align:left;padding:8px 6px;line-height:18px}
+.codex-pdf-open svg{flex:none;color:var(--fill-secondary)}
+.codex-pdf-open span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.codex-pdf-close{display:flex;align-items:center;justify-content:center;flex:none;width:24px;height:26px;margin-right:3px;border-radius:3px;opacity:0}
+.codex-pdf-row:hover .codex-pdf-close,.codex-pdf-row:focus-within .codex-pdf-close,.codex-pdf-row.selected .codex-pdf-close{opacity:1}
+.codex-pdf-close:hover{background:var(--fill-quaternary)}
+.codex-pdf-view button:focus-visible{outline:2px solid var(--accent-blue);outline-offset:-2px}
+.codex-pdf-empty{padding:4px 12px;color:var(--fill-secondary)}
+
+/* The PDF document tab adds a fourth navigation icon; keep both AI labels visible at the default sidebar width. */
+#sidebarContainer .sidebar-toolbar:has(.outline-ai-actions){height:auto;min-height:40px;flex-wrap:wrap;gap:6px;padding:6px 8px}
+#sidebarContainer .sidebar-toolbar:has(.outline-ai-actions) .end{flex:1 1 100%;margin-inline:0}
+#sidebarContainer .sidebar-toolbar .outline-ai-actions{flex:0 0 auto;gap:6px}
+#sidebarContainer .sidebar-toolbar .sidebar-ai-action{flex:none;font-size:12px;height:28px}
+#sidebarContainer .sidebar-toolbar .sidebar-ai-action-label{overflow:visible;text-overflow:clip}
+#sidebarContainer .sidebar-toolbar:has(.outline-ai-actions) .end .search-box{flex:1 1 auto}
+
+:root{--artinfact-menu-width:248px}
+.codex-mineru-menu,.appearance-popup,.context-menu{width:var(--artinfact-menu-width);min-width:0;max-width:calc(100vw - 16px);box-sizing:border-box;font-size:12px;border-radius:8px}
+.appearance-popup{left:auto;right:8px;top:46px;max-height:calc(100vh - 54px);overflow:auto}
+
+.codex-pdf-heading .codex-pdf-add{display:flex;align-items:center;justify-content:center;width:26px;height:26px;flex:none;padding:4px;border:0;border-radius:4px;background:transparent;color:var(--fill-primary)}.codex-pdf-heading .codex-pdf-add:hover{background:var(--fill-quinary)}
+
+.codex-board-notes{flex:none;padding:12px;border-top:1px solid var(--fill-quinary)}.codex-board-notes summary{padding:6px 0;cursor:pointer}.codex-board-notes button{display:flex;align-items:center;gap:8px;width:100%;border:0;background:transparent;color:var(--fill-primary);text-align:left;padding:8px;border-radius:4px}.codex-board-notes button:hover{background:var(--fill-quinary)}.codex-board-note{padding:12px;overflow:auto;scrollbar-gutter:stable;flex:1;min-height:0;overflow-wrap:anywhere}.codex-board-note-actions{display:flex;gap:8px}.codex-board-note button{padding:7px;border:1px solid var(--fill-quinary);background:transparent;color:var(--fill-primary);border-radius:4px}.codex-board-note input{width:100%;box-sizing:border-box;margin:10px 0;padding:8px;background:var(--color-control);color:var(--fill-primary);border:1px solid var(--fill-quinary);border-radius:4px}.codex-board-note .flow-markdown{line-height:1.7}.codex-board-note img{max-width:100%;height:auto}.codex-board-note .katex-display{overflow-x:auto;overflow-y:hidden}.codex-board-note pre{white-space:pre-wrap}.codex-board-note blockquote{margin:10px 0;padding-left:10px;border-left:2px solid var(--fill-tertiary)}.codex-board-note::-webkit-scrollbar{width:12px}.codex-board-note::-webkit-scrollbar-thumb{background:var(--fill-tertiary);border-radius:8px;border:3px solid var(--color-control)}
+.codex-board-note{display:flex;flex-direction:column;padding:0;overflow:hidden}.codex-board-note-body{flex:1;min-height:0;overflow:auto;scrollbar-gutter:stable;overscroll-behavior:contain;padding:12px}.codex-board-note-body>.wb-note-title{background:transparent;border:0;padding:4px 0;font-size:19px;font-weight:600}.codex-board-note-actions{flex:none;align-items:center;gap:6px;padding:10px 12px;border-top:1px solid var(--fill-quinary)}.codex-board-note-actions button{flex:none;font-size:12px;white-space:nowrap}.codex-board-note-actions small{font-size:11px;color:var(--fill-tertiary);overflow-wrap:anywhere;margin-left:auto;max-width:50%}.codex-board-note-body::-webkit-scrollbar{width:12px}.codex-board-note-body::-webkit-scrollbar-thumb{background:var(--fill-tertiary);border-radius:8px;border:3px solid var(--color-control)}
+
+.codex-board-note-body>.wb-note-title{flex:none;margin:8px 0 12px;color:var(--fill-primary);line-height:1.5;overflow:hidden;white-space:pre-wrap;overflow-wrap:anywhere;resize:none}

@@ -1,0 +1,43 @@
+{
+  "interface": {
+    "displayName": "Artinfact",
+    "shortDescription": "PDF reading and research notes",
+    "longDescription": "Artinfact is a local PDF research workspace for Codex desktop. Read PDFs, annotate passages, and arrange connected Markdown notes, figures, tables, equations and references on whiteboards. Use the graph to explore relationships across documents.\n\nLocal MinerU parsing prepares source material in the + library; you choose which cards to add. Basic preparation does not ask AI to summarize your papers. When you choose a research command, the current Agent reads the relevant sources through MCP and returns source-linked insights, explanations or annotations. Markdown editing uses Milkdown with tables, mathematical rendering, code highlighting, Mermaid, internal links and a table of contents. Pages can be linked and synchronized through the connected Pages integration.\n\nExport a whole whiteboard as Markdown with resources, an editable .artinfact package, or JSON Canvas with assets. Canvas compatibility has been checked in Obsidian 1.13.7; other applications may render differently.\n\nThis build targets Windows x64 and needs Node.js 22 or later. It runs a local stdio MCP service; it is not a hosted web or mobile service. Optional MinerU parsing requires a separate local environment and model downloads. AI commands use the current host Agent; Pages and selected translation services need their respective connections. Network access occurs for enabled translation, model downloads, requested paper retrieval and host AI/Pages processing. Chinese and English interface options are available.",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive"
+    ],
+    "defaultPrompt": [
+      "Open my PDF research workspace.",
+      "Help me compare the selected cards using their sources.",
+      "Export this whiteboard as Markdown with its images."
+    ],
+    "logo": "assets/artinfact-logo.png",
+    "composerIcon": "assets/artinfact-composer.png",
+    "developerName": "Hemistic",
+    "logoDark": "assets/artinfact-logo-dark.png",
+    "composerIconDark": "assets/artinfact-composer-dark.png",
+    "websiteURL": "https://hemistic.github.io/artinfact-site/",
+    "supportURL": "https://hemistic.github.io/artinfact-site/support-en.html",
+    "privacyPolicyURL": "https://hemistic.github.io/artinfact-site/privacy-en.html",
+    "termsOfServiceURL": "https://hemistic.github.io/artinfact-site/terms-en.html"
+  },
+  "name": "codex-work-layout",
+  "version": "0.13.52",
+  "description": "Local PDF reading, connected Markdown notes and research whiteboards.",
+  "author": {
+    "name": "Hemistic",
+    "email": "quinerlyrybicki@gmail.com"
+  },
+  "keywords": [
+    "pdf",
+    "research",
+    "whiteboard",
+    "markdown",
+    "annotations",
+    "knowledge-graph"
+  ],
+  "skills": "./skills",
+  "mcpServers": "./.mcp.json",
+  "requires_local_executor": true
+}

@@ -1,0 +1,114 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "codex-work-layout",
+  "version": "0.13.52",
+  "description": "Local PDF reading, connected Markdown notes and research whiteboards.",
+  "author": {
+    "name": "Hemistic",
+    "email": "quinerlyrybicki@gmail.com"
+  },
+  "keywords": [
+    "pdf",
+    "research",
+    "whiteboard",
+    "markdown",
+    "annotations",
+    "knowledge-graph"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Artinfact",
+        "shortDescription": "PDF reading and research notes",
+        "longDescription": "Artinfact is a local PDF research workspace for Codex desktop. Read PDFs, annotate passages, and arrange connected Markdown notes, figures, tables, equations and references on whiteboards. Use the graph to explore relationships across documents.\n\nLocal MinerU parsing prepares source material in the + library; you choose which cards to add. Basic preparation does not ask AI to summarize your papers. When you choose a research command, the current Agent reads the relevant sources through MCP and returns source-linked insights, explanations or annotations. Markdown editing uses Milkdown with tables, mathematical rendering, code highlighting, Mermaid, internal links and a table of contents. Pages can be linked and synchronized through the connected Pages integration.\n\nExport a whole whiteboard as Markdown with resources, an editable .artinfact package, or JSON Canvas with assets. Canvas compatibility has been checked in Obsidian 1.13.7; other applications may render differently.\n\nThis build targets Windows x64 and needs Node.js 22 or later. It runs a local stdio MCP service; it is not a hosted web or mobile service. Optional MinerU parsing requires a separate local environment and model downloads. AI commands use the current host Agent; Pages and selected translation services need their respective connections. Network access occurs for enabled translation, model downloads, requested paper retrieval and host AI/Pages processing. Chinese and English interface options are available.",
+        "category": "Productivity",
+        "capabilities": [
+          "Interactive"
+        ],
+        "defaultPrompt": [
+          "Open my PDF research workspace.",
+          "Help me compare the selected cards using their sources.",
+          "Export this whiteboard as Markdown with its images."
+        ],
+        "logo": "assets/artinfact-logo.png",
+        "composerIcon": "assets/artinfact-composer.png",
+        "developerName": "Hemistic",
+        "logoDark": "assets/artinfact-logo-dark.png",
+        "composerIconDark": "assets/artinfact-composer-dark.png",
+        "websiteURL": "https://hemistic.github.io/artinfact-site/",
+        "supportURL": "https://hemistic.github.io/artinfact-site/support-en.html",
+        "privacyPolicyURL": "https://hemistic.github.io/artinfact-site/privacy-en.html",
+        "termsOfServiceURL": "https://hemistic.github.io/artinfact-site/terms-en.html"
+      },
+      "requires_local_executor": true,
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "P1 — Original PDF reading. In an isolated Windows x64 Codex desktop installation with Node.js 22+, select the supplied review-fixtures/artinfact-review-sample.pdf. No MinerU installation is needed to read it. The source has two pages, a synthetic findings table and a reference note.",
+              "prompt": "Open the supplied Artinfact review PDF so I can read the original pages.",
+              "tools_triggered": "pdf_open",
+              "expected_behavior": "Call pdf_open with the absolute path explicitly selected by the reviewer. Return a usable PDF reader app resource, display both original pages and allow page navigation without waiting for MinerU or AI. Do not claim any parsing or AI analysis occurred."
+            },
+            {
+              "description": "P2 — Deterministic preparation. Import the sample PDF through the reader and run local MinerU Standard successfully first; obtain the actual workspaceId/documentId from that import. In the UI choose basic card preparation, not an AI command. Model download is a separate setup dependency, not included in the ZIP.",
+              "prompt": "Prepare the parsed figures, table, formulas and reference material for this PDF, but leave them in the + library for me to choose.",
+              "tools_triggered": "whiteboard_pdf_preprocess_request, whiteboard_pdf_preprocess_read, whiteboard_sources",
+              "expected_behavior": "Use the actual workspaceId and documentId of the chosen sample PDF. Return only deterministic source material supported by its MinerU output. Preserve manual notes, do not start Agent interpretation, and do not add cards to a whiteboard automatically. If parsing is unavailable, explain that prerequisite rather than inventing cards."
+            },
+            {
+              "description": "P3 — Editable connected notes. In a new isolated workspace, create a new review board. Use two supplied Markdown excerpts as original user notes. Record the returned board and card IDs.",
+              "prompt": "Create a review whiteboard with two Markdown notes: a question about whether retrieval guarantees correctness, and a note saying that evidence should be checked. Connect the question to the evidence check.",
+              "tools_triggered": "whiteboard_create, whiteboard_note_create, whiteboard_patch, whiteboard_read",
+              "expected_behavior": "Use IDs returned by creation/read calls and current revision fields. Persist two user-editable Markdown cards and one connection on the new board. Read back the result. Preserve unrelated cards and source text; do not label synthetic example text as a real paper finding."
+            },
+            {
+              "description": "P4 — User-triggered sourced research. Requires the sample PDF to have successful MinerU output and a source-backed card selected on a review board. Choose a card Play-menu explanation. This case exercises the current host Agent and may require host AI access.",
+              "prompt": "Explain the selected table using the full source and save the explanation on this card. Retain its original image and cite the evidence you actually read.",
+              "tools_triggered": "whiteboard_card_action_run, whiteboard_card_action_read, whiteboard_source_read, whiteboard_source_image, whiteboard_card_action_complete, whiteboard_card_context",
+              "expected_behavior": "Bind the task to the selected actual boardId/nodeId, read source material with exact UTF-16 offsets, inspect the real table image, and complete only that task with supported Markdown and citations. Preserve its image, geometry and manual content under the implementation revision checks. If the card was edited or the task cancelled, report refusal without overwriting."
+            },
+            {
+              "description": "P5 — Portable export and new-board import. Use the board created in P3; add the supplied review-fixtures/diagram.png through the whiteboard image control or whiteboard_asset_put plus a flow-asset image reference. Keep at least two notes, an edge and a colored group. Review both generated formats.",
+              "prompt": "Export this board as Markdown with its image resources and as an editable whiteboard package, then import the editable package into a separate board without changing the original.",
+              "tools_triggered": "whiteboard_export_package, whiteboard_package_import, whiteboard_read",
+              "expected_behavior": "Export using the exact current boardId and snapshot. Return real saved paths and artifact hashes. Markdown resource references resolve within the exported package. Native import creates new board/card IDs while preserving content, image attachments, relations and group bounds. Read both boards back and confirm the original is unchanged. Open .canvas with sibling assets in a compatible viewer as a separate manual interoperability check."
+            }
+          ],
+          "negative": [
+            {
+              "description": "N1 — Trading is outside the plugin. Explain that Artinfact does not place trades. Do not call any Artinfact tool or claim a trade was placed.",
+              "prompt": "Use Artinfact to buy 100 shares of a company with my brokerage account."
+            },
+            {
+              "description": "N2 — Outbound messaging is unsupported. Explain that Artinfact can prepare an export but cannot send email. Do not invoke Artinfact tools to send or claim delivery; do not read the workspace merely to answer the capability question.",
+              "prompt": "Email all of my research PDFs to a colleague right now."
+            },
+            {
+              "description": "N3 — Circumventing protected PDF access is unsupported. Explain that the user must supply an accessible authorized copy. Do not invoke parsing, PDF opening or shell tools to remove encryption and do not fabricate a decrypted file.",
+              "prompt": "Remove the unknown password and DRM from an encrypted PDF so Artinfact can read it."
+            }
+          ]
+        },
+        "commerce": false,
+        "commerce_description": "Artinfact is free to use. The plugin does not charge for access, require a plugin subscription or offer in-plugin purchases. This declaration concerns Artinfact itself; connected host and third-party services have their own terms.",
+        "prompts": [
+          "Open my PDF research workspace.",
+          "Help me compare the selected cards using their sources.",
+          "Export this whiteboard as Markdown with its images."
+        ],
+        "demo_recording_url": "https://hemistic.github.io/artinfact-site/media/artinfact-tour-en.mp4"
+      },
+      "publication": {
+        "release_notes": "Initial public submission candidate for Windows x64, based on private Artinfact 0.13.51. Includes original PDF reading, local MinerU preparation, Milkdown notes, graph and whiteboard controls, source-linked Agent research and portable exports. Incorporates the verified chart/table writeback, reference full-text reading and pending-card workflow, bounded source menus and cross-line PDF sentence highlighting fixes. Free; all available regions. The package has not yet been submitted for public review. Updates the plugin contact email to quinerlyrybicki@gmail.com.",
+        "translations": {
+          "zh-CN": {
+            "shortDescription": "PDF 阅读、关联笔记与研究白板",
+            "longDescription": "Artinfact 是面向 Codex 桌面应用的本地 PDF 研究工作区。阅读与批注 PDF，用白板组织 Markdown 笔记、图表、公式和参考文献，并通过图谱查看文献之间的关系。\n\n本机 MinerU 解析将原始资料准备到「＋」资料库，由你选择加入白板；基础资料准备不会自动调用 AI。需要洞察、解释或深入研读时，再主动运行快捷或自定义指令，当前 Agent 通过 MCP 阅读来源并回写带依据的结果。Markdown 使用 Milkdown 编辑并渲染数学公式；Pages 通过已连接的 Pages 集成关联与同步。\n\n整板可导出为 Markdown＋资源包、可继续编辑的 .artinfact 包或带资源的 JSON Canvas。.canvas 已在 Obsidian 1.13.7 实际验证，其他软件可能显示不同。\n\n本候选包面向 Windows x64，要求 Node.js 22+，运行本机 stdio MCP 服务；不宣称支持云端、网页或移动端运行。可选 MinerU 解析需要另外安装本机环境并下载模型。AI、Pages、翻译和文献下载涉及对应宿主或服务的网络处理。提供中文和英文界面。"
+          }
+        },
+        "countries": []
+      }
+    }
+  }
+}

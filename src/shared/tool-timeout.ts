@@ -1,0 +1,1 @@
+export function toolTimeout(name:string){return /^(?:pdf_runtime_read|pdf_document_read|pdf_workspace_document_open)$/.test(name)?20000:/^whiteboard_(?:note_(?:read|write)|notes_list|read|list|pages_(?:list|target)|sources|cards)$/.test(name)?20000:120000;}

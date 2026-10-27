@@ -1,0 +1,8 @@
+{
+  "name": "codex-work-layout",
+  "defaultPrompt": [
+    "Open my PDF research workspace.",
+    "Help me compare the selected cards using their sources.",
+    "Export this whiteboard as Markdown with its images."
+  ]
+}

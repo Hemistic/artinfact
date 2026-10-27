@@ -1,0 +1,1 @@
+exports.getPdfWorkerDir=()=>__dirname;

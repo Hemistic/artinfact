@@ -1,0 +1,11 @@
+import test from'node:test';import assert from'node:assert/strict';import{mkdtemp,rm}from'node:fs/promises';import{tmpdir}from'node:os';import{join,resolve}from'node:path';import{Client}from'@modelcontextprotocol/sdk/client/index.js';import{StdioClientTransport}from'@modelcontextprotocol/sdk/client/stdio.js';
+test('production language tools are app-only and keep translation target and appearance independent across restart',async()=>{
+ const root=await mkdtemp(join(tmpdir(),'artinfact-ui-language-mcp-'));
+ try{for(let run=0;run<2;run++){const client=new Client({name:'ui-language-test',version:'1'});await client.connect(new StdioClientTransport({command:process.execPath,args:[resolve('dist/server/index.js')],env:{...process.env,CODEX_PDF_DATA_DIR:root}}));
+  try{const tools=(await client.listTools()).tools;for(const name of ['pdf_ui_language_read','pdf_ui_language_update'])assert.deepEqual((tools.find(t=>t.name===name)?._meta?.ui as any).visibility,['app']);
+   if(!run){assert.equal((await client.callTool({name:'pdf_ui_language_read',arguments:{}}))._meta?.uiLanguage,'zh');await client.callTool({name:'pdf_translation_preferences_update',arguments:{preferences:{enabled:false,provider:'google',target:'ja'}}});await client.callTool({name:'pdf_preferences_update',arguments:{appearance:{scheme:'dark',paper:'light'}}});const saved=await client.callTool({name:'pdf_ui_language_update',arguments:{language:'en'}});assert.equal(saved.isError,undefined);assert.equal(saved._meta?.uiLanguage,'en');}
+   assert.equal((await client.callTool({name:'pdf_ui_language_read',arguments:{}}))._meta?.uiLanguage,'en');assert.equal(((await client.callTool({name:'pdf_translation_preferences_read',arguments:{}}))._meta?.translationPreferences as any).target,'ja');assert.deepEqual((await client.callTool({name:'pdf_preferences_read',arguments:{}}))._meta?.appearance,{scheme:'dark',paper:'light'});
+   assert.equal((await client.callTool({name:'pdf_ui_language_update',arguments:{language:'invalid'}})).isError,true);assert.equal((await client.callTool({name:'pdf_ui_language_read',arguments:{}}))._meta?.uiLanguage,'en');
+  }finally{await client.close();}
+ }}finally{await rm(root,{recursive:true,force:true});}
+});

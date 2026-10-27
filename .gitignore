@@ -1,0 +1,28 @@
+# Installed development dependencies; the small vendored canvas runtime is intentional.
+/node_modules/
+**/node_modules/
+!/vendor/mineru/runtime/node_modules/
+!/vendor/mineru/runtime/node_modules/**
+/dist/
+/releases/
+/.preview-data/
+/.context/
+/.source-sync-conflicts/
+/coverage/
+/test-results/
+/playwright-report/
+.env
+.env.*
+!.env.example
+*.log
+*.tmp
+*.pyc
+__pycache__/
+.DS_Store
+Thumbs.db
+# Workspace content and model environments belong outside the source checkout.
+/workspaces/
+/processors/
+/.artinfact/
+/artifacts/
+

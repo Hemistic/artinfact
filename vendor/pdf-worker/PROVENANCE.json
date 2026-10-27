@@ -1,0 +1,9 @@
+{
+  "repository": "https://github.com/zotero/pdf-worker",
+  "importedFrom": "pdf-ai/pdf-worker",
+  "commit": "024339a8469d7af368b9580b85fd8c8e906384bb",
+  "pdfJsCommit": "91f87bb4c2d3cf9eb9e8604863e5c62509dfbbed",
+  "workerSha256": "8eb8ddd54f3b9d3160a9a1e35ac0884a5c8cb9e0020ee2814b606c89887895c0",
+  "license": "AGPL-3.0",
+  "modifiedRuntime": false
+}

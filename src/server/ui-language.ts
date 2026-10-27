@@ -1,0 +1,6 @@
+import{readFile,mkdir,writeFile,unlink}from'node:fs/promises';import{join}from'node:path';import{randomUUID}from'node:crypto';import{renameWithRetry}from'./atomic-rename.js';import type{UiLanguage}from'../shared/ui-language.js';
+export class UiLanguageStore{
+ private pending:Promise<unknown>=Promise.resolve();constructor(private root:string){}
+ async read():Promise<UiLanguage>{await this.pending.catch(()=>{});try{const value=JSON.parse(await readFile(join(this.root,'ui-language.json'),'utf8'));if(value.version!==1||!['zh','en'].includes(value.language))throw Error('invalid');return value.language;}catch(error){if((error as NodeJS.ErrnoException).code==='ENOENT')return'zh';throw Error('界面语言设置损坏，原文件已保留');}}
+ async write(language:UiLanguage){if(language!=='zh'&&language!=='en')throw Error('Unsupported UI language');const operation=this.pending.catch(()=>{}).then(async()=>{await mkdir(this.root,{recursive:true});const temporary=join(this.root,`ui-language.${randomUUID()}.tmp`);try{await writeFile(temporary,JSON.stringify({version:1,language}),{mode:0o600});await renameWithRetry(temporary,join(this.root,'ui-language.json'));}finally{await unlink(temporary).catch(()=>{});}});this.pending=operation;await operation;return language;}
+}

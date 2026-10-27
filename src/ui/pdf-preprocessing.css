@@ -1,0 +1,23 @@
+.pdf-preprocessing-menu{color:var(--fg);font:inherit;box-sizing:border-box}
+.pdf-preprocessing-menu .preprocess-papers>summary{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:7px 10px;font-size:13px}.pdf-preprocessing-menu .preprocess-selection-count{font-size:11px;color:var(--muted)}.pdf-preprocessing-menu .preprocess-research-body{padding:5px 8px 9px}.pdf-preprocessing-menu .preprocess-ai{margin:2px 0}.pdf-preprocessing-menu .preprocess-ai>summary{list-style:none;display:flex;justify-content:space-between;gap:8px}.pdf-preprocessing-menu .preprocess-ai>summary:after{content:'⌄';color:var(--muted);flex:none}.pdf-preprocessing-menu .preprocess-ai[open]>summary:after{content:'⌃'}.pdf-preprocessing-menu .preprocess-ai[open]{border-radius:6px;background:var(--panel)}
+.pdf-preprocessing-menu .preprocess-level{display:block;padding:4px 10px;color:var(--muted);font-size:11px;font-weight:500}
+.pdf-preprocessing-menu .preprocess-ai>summary{cursor:pointer;padding:7px 10px;font-size:13px;color:var(--fg)}
+.pdf-preprocessing-menu .preprocess-help{font-size:12px;line-height:1.65;color:var(--muted);margin:12px 0}
+.pdf-preprocessing-menu .preprocess-documents{max-height:240px;overflow:auto;scrollbar-gutter:stable;margin:8px 0 12px}
+.pdf-preprocessing-menu .preprocess-document{display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.pdf-preprocessing-menu .preprocess-document>input{margin-top:4px;flex:none}
+.pdf-preprocessing-menu .preprocess-document>span{display:grid;gap:4px;min-width:0}
+.pdf-preprocessing-menu .preprocess-document strong{font-size:13px;font-weight:500;overflow-wrap:anywhere}
+.pdf-preprocessing-menu .preprocess-document small{font-size:11px;color:var(--muted);line-height:1.5}
+.pdf-preprocessing-menu .preprocess-force{font-size:12px;display:flex;align-items:center;gap:8px;margin:12px 0}
+.pdf-preprocessing-menu [role=status]{font-size:12px;line-height:1.7;margin:12px 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.pdf-preprocessing-menu .command-actions{display:flex;gap:8px;flex-wrap:wrap}
+.pdf-preprocessing-menu.artinfact-dropdown .command-actions button{flex:1;min-width:0;width:auto;padding:6px 8px;font-size:12px;min-height:34px;justify-content:center;line-height:1.4}
+.pdf-preprocessing-menu.artinfact-dropdown .command-actions button.primary{background:var(--accent);color:#fff}
+.pdf-preprocessing-menu.artinfact-dropdown button[hidden]{display:none!important}
+.pdf-preprocessing-menu.artinfact-dropdown .preprocess-help{line-height:1.5;margin:6px 0}
+.pdf-preprocessing-menu.artinfact-dropdown .preprocess-documents{max-height:144px;margin:6px 0}
+.pdf-preprocessing-menu.artinfact-dropdown .preprocess-document{padding:6px 0;gap:8px}
+.pdf-preprocessing-menu.artinfact-dropdown .preprocess-force{margin:8px 0}
+.pdf-preprocessing-menu.artinfact-dropdown [role=status]{line-height:1.5;margin:6px 0}
+.pdf-preprocessing-menu.artinfact-dropdown .processing-menu-action{min-height:32px;padding:7px 10px}

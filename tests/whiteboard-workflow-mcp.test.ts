@@ -1,0 +1,36 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {mkdtemp,rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {Client} from '@modelcontextprotocol/sdk/client/index.js';
+import {InMemoryTransport} from '@modelcontextprotocol/sdk/inMemory.js';
+import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';
+import {WorkspaceLibrary} from '../src/server/workspaces.js';
+import {WorkspaceRuntime} from '../src/server/workspace-runtime.js';
+import {PdfStateStore} from '../src/server/pdf-store.js';
+import {registerWorkspaceWhiteboards} from '../src/server/whiteboard-tools.js';
+import {PagesPreviewStore} from '../src/server/pages-preview.js';
+import {WhiteboardPages} from '../src/server/whiteboard-pages.js';
+
+test('actual workflow MCP completes a Pages output, supports native target and refreshed Pages as an input',async t=>{
+ const root=await mkdtemp(join(tmpdir(),'workflow-mcp-')),library=new WorkspaceLibrary(()=>root),runtime=new WorkspaceRuntime(library,new PdfStateStore(join(root,'legacy')));
+ const server=new McpServer({name:'test',version:'1'});registerWorkspaceWhiteboards(server,runtime);
+ const client=new Client({name:'test',version:'1'}),[a,b]=InMemoryTransport.createLinkedPair();await server.connect(a);await client.connect(b);
+ t.after(async()=>{await client.close();await server.close();await runtime.close();await rm(root,{recursive:true,force:true});});
+ const call=async(name:string,args:Record<string,unknown>={})=>{const r=await client.callTool({name,arguments:{workspaceId:'default',...args}});if(r.isError)throw Error(JSON.stringify(r.content));return r.structuredContent as any;};
+ const tools=(await client.listTools()).tools.map(t=>t.name);for(const name of ['whiteboard_workflow_run','whiteboard_workflow_read','whiteboard_workflow_complete','whiteboard_source_image','whiteboard_paper_panorama'])assert.ok(tools.includes(name));
+ await library.list();await library.importNote('default','paper.md','Exact evidence.');
+ let s=await call('whiteboard_create',{title:'Output',templateId:'free',expectedRevision:0,requestId:'create'}),boardId=s.board.id;
+ const patch=(operations:any[])=>call('whiteboard_patch',{boardId,actor:'user',expectedRevision:s.revision,requestId:crypto.randomUUID(),operations});
+ s=await patch([{op:'put_node',node:{id:'source',title:'Paper',note:'',kind:'note',role:'source',sourceId:'md:paper.md',x:0,y:0}},{op:'put_node',node:{id:'pages',title:'Pages 输出',note:'',kind:'note',x:600,y:0,workflow:{type:'pages',prompt:'总结'}}},{op:'put_edge',edge:{id:'input',source:'source',target:'pages',label:'提炼证据'}}]);
+ s=await call('whiteboard_workflow_run',{boardId,nodeId:'pages',expectedRevision:s.revision,requestId:'run'});const taskId=s.board.tasks.at(-1).id;
+ const pageId='page_'+'c'.repeat(32),page={pageId,url:'https://chatgpt.com/space/'+pageId,title:'Summary',blocks:[{id:'block',kind:'markdown',hash:'hash1',markdown:'# Summary\n\n**真实内容**'}],sequence:1};
+ s=await call('whiteboard_workflow_complete',{boardId,taskId,expectedRevision:s.revision,requestId:'complete',result:{markdown:'Evidence summary',citations:[{sourceId:'md:paper.md',start:0,end:15,quote:'Exact evidence.'}],page}});
+ const target=await call('whiteboard_pages_target',{boardId,nodeId:'pages'});assert.equal(target.card.pageId,pageId);assert.match(target.card.excerpt,/真实内容/);
+ const listed=await call('whiteboard_sources');const input=listed.sources.find((s:any)=>s.cardId==='pages');assert.equal(input.category,'pages');assert.match((await call('whiteboard_source_read',{sourceId:input.id})).text,/真实内容/);
+ const cache=new PagesPreviewStore(new WhiteboardPages(runtime).source),refresh=await cache.begin('default',target.name,'refresh');await cache.complete('default',target.name,refresh.id,{...page,blocks:[{id:'block',kind:'markdown',hash:'hash2',markdown:'User edited content'}],sequence:2});
+ assert.equal((await call('whiteboard_source_read',{sourceId:input.id})).text,'User edited content');
+ const newBoard=await call('whiteboard_create',{title:'Reuse',templateId:'free',expectedRevision:s.revision,requestId:'other'});
+ assert.equal((await call('whiteboard_pages_target',{boardId:newBoard.board.id,sourceId:input.id})).card.pageId,pageId);
+});

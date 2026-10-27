@@ -1,0 +1,13 @@
+{
+  "readerRepository": "https://github.com/zotero/reader",
+  "readerCommit": "439a43d3fe1f56729bcd85fbfdf4d8b7ba0c76d9",
+  "pdfjsRepository": "https://github.com/zotero/pdf.js",
+  "pdfjsCommit": "b0d511c4947bc32127bd7aa1a2b834e3bd0baa64",
+  "sourceProject": "pdf-ai",
+  "modifiedProjectSnapshot": true,
+  "runtimeSha256": "e43391afb8d781746880f98102b7f2e18cda29f3576e482902c1a8587f25162b",
+  "importedAt": "2026-09-30T15:38:12.366Z",
+  "license": "AGPL-3.0",
+  "sourceDirectory": "source",
+  "sourceNotes": "Reader and PDF.js/EPUB.js source and build configuration are included. Dependency installations, upstream tests, examples, generated build outputs and git metadata are omitted."
+}

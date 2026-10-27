@@ -1,0 +1,2 @@
+export type ReferenceLocation={start?:number;end?:number;quote:string;context:string;blockIds:string[];pageIndex?:number;match:'matched'|'unlocated'|'ambiguous';candidateCount?:number;marker?:{text:string;start:number;end:number}};
+export type BibliographyEntry={raw:string;title?:string;number?:string;authorKey?:string;year?:string;doi?:string;url?:string;entry:ReferenceLocation;occurrences:ReferenceLocation[]};

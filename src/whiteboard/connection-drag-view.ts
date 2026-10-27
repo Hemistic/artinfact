@@ -1,0 +1,23 @@
+import {connectionCurve,connectionIntent,type PortSide} from './connection-drag.js';
+import type {Board} from './whiteboard-domain.js';
+export function createConnectionDrag(viewport:HTMLElement,options:{board:()=>Board|undefined;card:(id:string)=>HTMLElement|undefined;save:(edge:NonNullable<ReturnType<typeof connectionIntent>>)=>Promise<void>;onState:(active:boolean)=>void;notice:(message:string)=>void}){
+ let drag:{source:string;side:PortSide;pointer:number;target?:string;targetSide:PortSide;x:number;y:number}|undefined;
+ const ghost=document.createElementNS('http://www.w3.org/2000/svg','svg');ghost.classList.add('wb-connection-preview');ghost.setAttribute('hidden','');
+ const path=document.createElementNS(ghost.namespaceURI,'path');ghost.append(path);viewport.append(ghost);
+ const box=(card:HTMLElement)=>{const r=card.getBoundingClientRect(),v=viewport.getBoundingClientRect();return{x:r.left-v.left,y:r.top-v.top,width:r.width,height:r.height};};
+ function paint(){if(!drag)return;const source=options.card(drag.source);if(!source)return cancel();const element=document.elementFromPoint(drag.x,drag.y),card=element?.closest<HTMLElement>('.wb-card');
+  for(const n of options.board()?.nodes??[]){const node=options.card(n.id);node?.removeAttribute('data-connect-target');for(const port of node?.querySelectorAll<HTMLElement>('.wb-port')??[])port.dataset.target='false';}
+  drag.target=card&&options.card(card.dataset.id!)===card?card.dataset.id:undefined;
+  const intent=options.board()&&connectionIntent(options.board()!,drag.source,drag.target,drag.side);const port=element?.closest<HTMLElement>('.wb-port')?.dataset.side as PortSide|undefined;
+  if(card&&intent){const r=card.getBoundingClientRect();drag.targetSide=port??(drag.x<r.left+r.width/2?'left':'right');card.dataset.connectTarget='true';card.querySelector<HTMLElement>('.wb-port[data-side='+drag.targetSide+']')!.dataset.target='true';}
+  const v=viewport.getBoundingClientRect(),target=card&&intent?box(card):{x:drag.x-v.left,y:drag.y-v.top,width:0,height:0};
+  path.setAttribute('d',connectionCurve(box(source),target,drag.side,drag.targetSide));ghost.dataset.valid=String(!!intent);
+ }
+ function cancel(){if(!drag)return false;const pointer=drag.pointer;drag=undefined;ghost.setAttribute('hidden','');viewport.dataset.connecting='false';for(const n of options.board()?.nodes??[])options.card(n.id)?.removeAttribute('data-connect-target');for(const n of options.board()?.nodes??[])for(const port of options.card(n.id)?.querySelectorAll<HTMLElement>('.wb-port')??[]){port.dataset.active='false';port.dataset.target='false';}options.onState(false);if(viewport.hasPointerCapture(pointer))viewport.releasePointerCapture(pointer);return true;}
+ function start(event:PointerEvent,source:string,side:PortSide){if(event.button!==0)return;event.preventDefault();event.stopPropagation();cancel();drag={source,side,pointer:event.pointerId,targetSide:'left',x:event.clientX,y:event.clientY};options.card(source)?.querySelector<HTMLElement>('.wb-port[data-side='+side+']')?.setAttribute('data-active','true');options.onState(true);ghost.removeAttribute('hidden');viewport.dataset.connecting='true';viewport.setPointerCapture(event.pointerId);paint();}
+ window.addEventListener('pointermove',event=>{if(!drag||event.pointerId!==drag.pointer)return;drag.x=event.clientX;drag.y=event.clientY;paint();});
+ window.addEventListener('pointerup',event=>{if(!drag||event.pointerId!==drag.pointer)return;drag.x=event.clientX;drag.y=event.clientY;paint();if(!drag)return;const edge=options.board()&&connectionIntent(options.board()!,drag.source,drag.target,drag.side,drag.targetSide);cancel();if(edge)void options.save(edge).catch(e=>options.notice(String(e)));else options.notice('未建立连接 · 请检查重复连接或循环输入');});
+ window.addEventListener('pointercancel',event=>{if(drag?.pointer===event.pointerId)cancel();});viewport.addEventListener('lostpointercapture',event=>{if(drag?.pointer===event.pointerId)cancel();});
+ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&cancel()){event.preventDefault();event.stopImmediatePropagation();options.notice('已取消连线');}},true);
+ return{cancel,active:()=>!!drag,ports(card:HTMLElement,id:string,title:string){for(const side of ['left','right'] as const){const port=document.createElement('button');port.type='button';port.className='wb-port';port.dataset.side=side;port.setAttribute('aria-label',title+' · '+({left:'左',right:'右',top:'上',bottom:'下'}[side])+'侧连接点');port.title='拖到另一张卡片建立连接';port.onpointerdown=event=>start(event,id,side);port.onclick=event=>event.stopPropagation();card.append(port);}}};
+}

@@ -1,0 +1,5 @@
+/* Compile only the installed book component; omit Tailwind's global reset. */
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities) source(none);
+@source "./components/perspective-book.tsx";

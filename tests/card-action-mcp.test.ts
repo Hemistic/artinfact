@@ -1,0 +1,20 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {mkdtemp,rm} from 'node:fs/promises';import {tmpdir} from 'node:os';import {join} from 'node:path';
+import {Client} from '@modelcontextprotocol/sdk/client/index.js';import {InMemoryTransport} from '@modelcontextprotocol/sdk/inMemory.js';import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';
+import {registerWhiteboardTools} from '../src/whiteboard/whiteboard-mcp.js';import {WhiteboardStore} from '../src/whiteboard/whiteboard-store.js';import {pdfReferenceSources} from '../src/server/pdf-bibliography.js';
+test('real MCP adds a reference asset, pages through citation data, and atomically writes an authorized card result',async t=>{
+ const root=await mkdtemp(join(tmpdir(),'reference-mcp-')),id='a'.repeat(64),text='# Method\n\nWe use this method [1].\n\n# References\n\n[1] Smith, J. 2020. Actual work.',document={id,name:'Paper',format:'pdf' as const,category:'document' as const,path:'paper.pdf',standard:true,text};
+ const references=pdfReferenceSources(document,[{type:'text',text:'We use this method [1].',page_idx:0,bbox:[10,10,900,100]},{type:'ref_text',text:'[1] Smith, J. 2020. Actual work.',page_idx:1,bbox:[10,10,900,100]}]);
+ const store=new WhiteboardStore(root,async()=>[document,...references]),server=new McpServer({name:'test',version:'1'});registerWhiteboardTools(server,async()=>store);const client=new Client({name:'test',version:'1'}),[a,b]=InMemoryTransport.createLinkedPair();await server.connect(a);await client.connect(b);
+ t.after(async()=>{await client.close();await server.close();await rm(root,{recursive:true,force:true});});
+ const call=async(name:string,args:any)=>{const r=await client.callTool({name,arguments:{workspaceId:'default',...args}});if(r.isError)throw Error(JSON.stringify(r.content));return r.structuredContent as any;};
+ let view=await call('whiteboard_create',{title:'Reference test',templateId:'free',expectedRevision:0,requestId:'create'}),boardId=view.board.id;
+ view=await call('whiteboard_add_sources',{boardId,sourceIds:[references[0].id],expectedRevision:view.revision,requestId:'add'});const node=view.board.board.nodes[0];assert.equal(node.referenceCard,true);assert.equal(node.note,'');
+ const reference=await call('whiteboard_reference_read',{sourceId:references[0].id,offset:0,limit:1});assert.equal(reference.totalOccurrences,1);assert.equal(reference.entry.pageIndex,1);assert.equal(reference.occurrences[0].pageIndex,0);
+ const context=await call('whiteboard_card_context',{boardId,nodeId:node.id});assert.match(context.bibliography.raw,/Smith/);
+ view=await call('whiteboard_card_action_run',{boardId,nodeId:node.id,action:'explain_reference',expectedRevision:view.revision,requestId:'run'});const taskId=view.board.tasks.at(-1).id;
+ const task=await call('whiteboard_card_action_read',{boardId,taskId});assert.ok(task.task.sourceIds.includes(id));
+ view=await call('whiteboard_task_status',{boardId,taskId,status:'running',expectedRevision:view.revision,requestId:'claim'});
+ view=await call('whiteboard_card_action_complete',{boardId,taskId,expectedRevision:view.revision,requestId:'complete',result:{markdown:'本文把该方法作为研究依据。'}});
+ assert.equal(view.board.board.nodes[0].note,'本文把该方法作为研究依据。');assert.equal((await call('whiteboard_reference_read',{sourceId:references[0].id})).raw,reference.raw);
+ const progress=await store.preprocessRead();assert.equal(progress.documents[0].total,1,'reference assets do not expand the shared PDF preprocessing job');
+});

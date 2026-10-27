@@ -1,0 +1,26 @@
+{
+  "source": "owner-provided pdf-ai/electron",
+  "importedAt": "2026-10-01",
+  "files": {
+    "ai-insight-service.js": "c581b443b53f402562c010b4a18250b4b2940886bb875f57e4d601387cd5593e",
+    "ai-outline-service.js": "f79b07c0de579bc094acc642f85833ba5a75f60c0d02858d2ce9f358d0a1f307",
+    "mineru-content-tree.js": "19fc8b37814fe1f1d932dbc7eb5fb5b05bad71624caa3e7f5c18374406303d94",
+    "pdfai-context-pdf.js": "a0da2c6287997156498c504210621b22a1eacd2773f44441405463cb87bebf7f",
+    "pdfai-context-store.js": "4c19eaa3d93c6c8e60c98fe5b58d48878d43cf4dc035a5626a2582276f6811a4",
+    "project-state-lock.js": "5c3ff0e71a9b670951b3e4222193545f9fb161c10d991a37ae299bf940e1e2a0",
+    "wiki/canvas.ts": "8c87c1deaaed6b8cd377e54ae4527eba6b18534f2d241a38024ffe390ff345a9",
+    "wiki/graph.ts": "95a83bd12679b21fae75c4ae32f34b7fe66aabbae902d9bd044cb9682e30cbfa",
+    "wiki/markdown.ts": "0324d26ac20f4afcabd0b0d20a7b994cea83490943aa2b802bd69728ed0b1c8c",
+    "wiki/types.ts": "78ef8ea13b8050b4847a6dd64b41344cf7c3b976d66e820103b9a1297fb90b0f",
+    "wiki/vault.ts": "7f256f68797ddcfea104375d9ea70363cf99bd2c7de9e77cac3054cf4745ef19",
+    "wiki/webview.ts": "c02700f1be0c3af21e5b274e1268aa99c94d444c4abcc6d88f201ffcf0f02e2e"
+  },
+  "derivativeBuild": "scripts/build-research.mjs",
+  "changes": [
+    "Packaged runtime discovery and process isolation",
+    "Original live Wiki renderer without CLI/unreachable legacy renderer",
+    "Official Lucide toolbar icons",
+    "PDF worker getPageMetrics/findTextRects extension, original export worker retained"
+  ],
+  "license": "Combined distribution retains Zotero AGPL-3.0 and PDF.js Apache-2.0 notices"
+}

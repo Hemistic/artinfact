@@ -1,0 +1,6 @@
+<style>
+.wb-panel-resize{position:fixed;z-index:60;width:12px;cursor:col-resize;touch-action:none;user-select:none;pointer-events:auto;border-radius:6px;background:transparent}
+.wb-panel-resize::after{content:"";position:absolute;left:5px;top:0;bottom:0;width:2px;border-radius:2px;background:var(--line);opacity:.5}
+.wb-panel-resize:hover::after,.wb-panel-resize:focus-visible::after,.wb-panel-resize[data-dragging]::after{background:var(--accent);opacity:1;width:3px}
+.wb-panel-resize:focus-visible{outline:2px solid var(--accent);outline-offset:2px}.wb-panel-resize[hidden]{display:none!important}
+</style>

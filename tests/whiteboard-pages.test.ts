@@ -1,0 +1,28 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {mkdtemp,rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {WorkspaceLibrary} from '../src/server/workspaces.js';
+import {WorkspaceRuntime} from '../src/server/workspace-runtime.js';
+import {PdfStateStore} from '../src/server/pdf-store.js';
+import {WorkspaceWhiteboards} from '../src/server/whiteboard-service.js';
+import {WhiteboardPages} from '../src/server/whiteboard-pages.js';
+import {PagesPreviewStore} from '../src/server/pages-preview.js';
+test('graph Pages associations reuse Markdown links and share card IDs without changing graph notes or geometry',async t=>{
+ const root=await mkdtemp(join(tmpdir(),'graph-pages-')),library=new WorkspaceLibrary(()=>root),runtime=new WorkspaceRuntime(library,new PdfStateStore(join(root,'legacy')));
+ t.after(async()=>{await runtime.close();await rm(root,{recursive:true,force:true});});await library.list();await library.importNote('default','source.md','# Source');
+ const graph=new WorkspaceWhiteboards(runtime),store=await graph.store('default');
+ const node={id:'note-1',title:'My note',note:'**Original**',kind:'note' as const,x:80,y:90,width:420};
+ const a=await store.importBoard({title:'A',legacyKey:'a',board:{version:1,nodes:[node,{...node,id:'source',sourceId:'md:source.md',role:'source'}],edges:[]},expectedRevision:0,requestId:'a'});
+ const pages=new WhiteboardPages(runtime),snapshot=await pages.list('default',a.board!.id);assert.equal(snapshot.entries.length,2);assert.equal(snapshot.entries[1].name,'source.md');
+ const key=snapshot.entries[0].name,cache=new PagesPreviewStore(pages.source),request=await cache.begin('default',key,'create');assert.match((await cache.task('default',key,request.id)).markdown!,/Original/);
+ const pageId='page_'+'b'.repeat(32),payload={pageId,url:'https://chatgpt.com/space/'+pageId,title:'Pages updated',blocks:[{id:'block',kind:'markdown' as const,hash:'hash',markdown:'**Cloud version**'}],sequence:2};await cache.complete('default',key,request.id,payload);
+ assert.equal((await pages.list('default',a.board!.id)).entries[0].card?.excerpt,'**Cloud version**');assert.deepEqual((await store.read(a.board!.id)).board!.board.nodes[0],{...node,createdBy:'import',updatedBy:'import'});
+ const longBody=Array.from({length:30},(_,i)=>'Paragraph '+i+' **complete** $x^2$').join('\n\n');
+ const refresh=await cache.begin('default',key,'refresh',pageId);await cache.complete('default',key,refresh.id,{...payload,blocks:[{id:'instructions',kind:'agent_instructions',hash:'instruction',markdown:'Private instructions'},{id:'long',kind:'markdown',hash:'long',markdown:longBody}]});
+ const detail=await pages.target('default',a.board!.id,node.id,undefined,true);assert.equal(detail.markdown,longBody);assert.ok(!detail.card?.excerpt?.includes('Paragraph 29'));assert.equal((await pages.target('default',a.board!.id,node.id)).markdown,undefined);
+ const b=await store.importBoard({title:'B',legacyKey:'b',board:{version:1,nodes:[{...node,x:600}],edges:[]},expectedRevision:a.revision,requestId:'b'});assert.equal((await pages.list('default',b.board!.id)).entries[0].card?.pageId,pageId);
+ const other=await library.create('Other');await assert.rejects(pages.source.readNote(other.id,key),/卡片/);assert.equal((await library.get('default')).notes.length,1);
+ await assert.rejects(pages.target('default',a.board!.id,'unknown'),/卡片/);
+});

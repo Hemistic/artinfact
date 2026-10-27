@@ -1,0 +1,8 @@
+.artinfact-control-tooltip{position:fixed;z-index:2147483647;box-sizing:border-box;width:max-content;max-width:calc(100vw - 16px);height:auto;min-height:0;padding:7px 10px;border:0;border-radius:6px;background:#24262b;color:#fff;font:12px/1.5 system-ui,'Segoe UI',sans-serif;white-space:normal;overflow-wrap:anywhere;text-align:center;pointer-events:none;box-shadow:0 3px 12px #0002}
+.artinfact-control-tooltip[hidden]{display:none!important}
+.workspace-view-switch{display:inline-flex;align-items:center;flex:0 0 auto;gap:2px;padding:4px;border:1px solid #00000006;border-radius:8px;background:var(--aif-surface,var(--wb-card-surface,#fff));box-shadow:0 2px 8px #0000000b;overflow:visible}
+.workspace-view-switch button{position:relative;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;box-sizing:border-box;width:30px;height:30px;min-width:0;padding:0;border:0;border-radius:5px;background:transparent;color:var(--aif-text-muted,var(--muted,#74777e));cursor:pointer}
+.workspace-view-switch button svg{width:17px;height:17px;flex-shrink:0}
+.workspace-view-switch button:hover,.workspace-view-switch button[aria-pressed=true]{background:var(--aif-surface-hover,var(--soft,#ebf1fc));color:var(--aif-accent,var(--accent,#618bd5))}
+.workspace-view-switch button:focus-visible{outline:2px solid var(--aif-accent,var(--accent,#618bd5));outline-offset:2px}
+.workspace-view-switch button:disabled{opacity:.35;cursor:default}

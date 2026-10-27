@@ -1,0 +1,26 @@
+.workspace-select-menu,.workspace-manage-menu{font:13px var(--font-ui,sans-serif);color:var(--fg)}
+.workspace-select-menu>strong,.workspace-manage-menu>strong{display:block;padding:8px 10px;color:var(--muted);font-size:12px;font-weight:500;overflow-wrap:anywhere}
+.workspace-menu-list{max-height:280px;overflow:auto;scrollbar-gutter:stable}
+.workspace-select-menu.artinfact-dropdown button,.workspace-manage-menu.artinfact-dropdown button{display:flex;align-items:center;justify-content:flex-start;gap:10px;width:100%;text-align:left;padding:9px 10px;min-height:36px;border:0;background:transparent;color:var(--fg);font:inherit;white-space:normal}
+.workspace-select-menu button span,.workspace-manage-menu button span{overflow-wrap:anywhere}
+.workspace-select-menu button[aria-checked=true]{background:var(--chrome-hover);font-weight:600}
+.workspace-select-menu button:hover,.workspace-manage-menu button:hover{background:var(--chrome-hover)}
+.workspace-manage-menu.artinfact-dropdown button.destructive{color:#c94e4e}
+.workspace-select-menu hr,.workspace-manage-menu hr,.pdf-preprocessing-menu hr{border:0;border-top:1px solid var(--line);margin:6px 0}
+#home-workspace-select{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:9px 12px;max-width:360px;font:13px var(--font-ui,sans-serif)}
+#home-workspace-select>span{flex-shrink:0}
+.workspace-select-caret .ui-icon{width:14px;height:14px;transform:rotate(90deg)}
+.home-tools>.home-manage-trigger{width:36px;height:36px;padding:8px}
+.workspace-prompt.artinfact-dropdown{font:13px var(--font-ui,sans-serif)}
+.workspace-prompt.artinfact-dropdown form>div button{width:auto;padding:7px 12px;margin-top:8px}
+.pdf-preprocessing-menu.artinfact-dropdown{font:13px var(--font-ui,sans-serif)}
+.pdf-preprocessing-menu .dialog-title strong{font-size:13px}
+.pdf-preprocessing-menu.artinfact-dropdown .processing-menu-action{width:100%;display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:9px 10px;border:0;min-height:36px;background:transparent;color:var(--fg);font:inherit;text-align:left}
+.pdf-preprocessing-menu.artinfact-dropdown .processing-menu-action:hover{background:var(--chrome-hover)}
+.pdf-preprocessing-menu.artinfact-dropdown [hidden]{display:none!important}
+.pdf-preprocessing-menu .preprocess-options{border-top:1px solid var(--line);margin-top:8px;padding-top:2px}
+.pdf-preprocessing-menu .preprocess-options .processing-menu-action{background:var(--accent);color:#fff;justify-content:center}
+.pdf-preprocessing-menu [role=status]{padding:2px 10px;margin:10px 0;color:var(--muted);font-variant-numeric:tabular-nums}
+.pdf-preprocessing-menu .preprocess-document{padding:9px 0}
+.pdf-preprocessing-menu .preprocess-documents{max-height:200px}
+@media(max-width:680px){#home-workspace-select{min-width:130px;max-width:calc(100vw - 140px)}.home-section-heading{flex-wrap:wrap;gap:8px}.home-section-header{gap:10px}}

@@ -1,0 +1,13 @@
+import {canvasIcon} from './canvas-icons.js';
+import {canvasControlHeight} from './canvas-control-size.js';
+export function connectionLabel(edge:{id:string;label:string},point:{x:number;y:number},hooks:{select():void|Promise<void>;save(label:string):Promise<void>;research?:(anchor:HTMLElement)=>void;notice(message:string):void}){
+ const label=document.createElementNS('http://www.w3.org/2000/svg','foreignObject');label.setAttribute('x',String(point.x-90));label.setAttribute('y',String(point.y-canvasControlHeight/2));label.setAttribute('width','180');label.setAttribute('height',String(canvasControlHeight));label.classList.add('wb-edge-label');label.dataset.edge=edge.id;
+ const row=document.createElement('div');row.className='wb-edge-label-row';const button=document.createElement('button'),menu=document.createElement('button');button.type='button';button.className='wb-edge-label-text';button.textContent=edge.label.trim()||'添加关系';button.title='点击原位编辑 · Enter 保存 · Esc 取消';button.setAttribute('aria-label','连接：'+(edge.label.trim()||'添加关系'));menu.type='button';menu.className='wb-edge-label-menu';menu.append(canvasIcon('chevronDown'));menu.setAttribute('aria-label','连线研读快捷菜单');menu.onclick=e=>{e.stopPropagation();hooks.research?.(menu);};row.append(button,menu);
+ const edit=async()=>{
+  if(label.dataset.editing==='true')return;try{await hooks.select();}catch(error){hooks.notice(String(error));return;}const input=document.createElement('input');input.value=edge.label.trim();input.placeholder='填写关系或研究要求';input.maxLength=120;input.setAttribute('aria-label','编辑连线文字');label.dataset.editing='true';let saving=false,finished=false;
+  const restore=()=>{finished=true;label.dataset.editing='false';label.replaceChildren(row);};
+  const finish=async()=>{if(saving||finished)return;const text=input.value.trim();if(text===edge.label.trim()){restore();return;}saving=true;try{await hooks.save(text||' ');edge.label=text;button.textContent=text||'添加关系';button.setAttribute('aria-label','连接：'+(text||'添加关系'));restore();}catch(error){saving=false;hooks.notice(String(error));input.focus();}};
+  input.onkeydown=e=>{e.stopPropagation();if(e.isComposing||e.keyCode===229)return;if(e.key==='Enter'){e.preventDefault();void finish();}if(e.key==='Escape'&&!saving){e.preventDefault();restore();}};input.onblur=()=>void finish();label.replaceChildren(input);input.focus({preventScroll:true});input.select();
+ };
+ button.onclick=e=>{e.stopPropagation();void edit();};label.addEventListener('artinfact-edit-label',()=>void edit());label.onpointerdown=e=>e.stopPropagation();label.ondblclick=e=>e.stopPropagation();label.append(row);return label;
+}

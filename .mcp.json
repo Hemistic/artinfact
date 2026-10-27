@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "work-layout": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${PLUGIN_ROOT}/dist/server/index.js"
+      ],
+      "env": {}
+    }
+  }
+}

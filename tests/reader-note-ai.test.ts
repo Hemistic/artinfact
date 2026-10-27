@@ -1,0 +1,8 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {JSDOM} from 'jsdom';import {installReaderNoteAi} from '../src/ui/reader-note-ai.js';
+test('reader AI requests use the authenticated parent bridge and ignore unrelated or wrong-token replies',async()=>{
+ const dom=new JSDOM('<!doctype html>',{url:'https://reader.test'}),win=dom.window as any;win.__CODEX_READER_TOKEN__='reader-token';const posted:any[]=[],bridge=installReaderNoteAi(win,(_type,payload)=>posted.push(payload)),context={document:'Original',selection:'Original',instruction:'改写'},iterator=bridge.provider('workspace','note')(context,new AbortController().signal),next=iterator[Symbol.asyncIterator]().next();
+ const wait=async(count:number)=>{for(let i=0;i<50&&posted.length<count;i++)await new Promise(resolve=>setTimeout(resolve,1));assert.ok(posted.length>=count);};const reply=(index:number,result:unknown,token='reader-token')=>win.dispatchEvent(new win.MessageEvent('message',{source:win.parent,data:{type:'codex-reader:note-ai-reply',codexReaderToken:token,payload:{id:posted[index].id,result}}}));
+ try{await wait(1);assert.equal(posted[0].name,'whiteboard_note_ai_begin');reply(0,{id:'wrong'},'wrong-token');await new Promise(resolve=>setTimeout(resolve,5));assert.equal(posted.length,1);
+  reply(0,{id:'9ae215bb-8e91-4720-b1f4-693cc56f3152'});await wait(2);assert.equal(posted[1].operation,'send');assert.equal(posted[1].nodeId,'note');reply(1,{mode:'sent'});await wait(3);assert.equal(posted[2].name,'whiteboard_note_ai_read');reply(2,{status:'completed',markdown:'Rewritten'});assert.deepEqual(await next,{done:false,value:'Rewritten'});await iterator[Symbol.asyncIterator]().next();
+ }finally{dom.window.close();}
+});

@@ -1,0 +1,20 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {mkdtemp,mkdir,writeFile} from 'node:fs/promises';import {tmpdir} from 'node:os';import {join,resolve} from 'node:path';
+import {Client} from '@modelcontextprotocol/sdk/client/index.js';import {StdioClientTransport} from '@modelcontextprotocol/sdk/client/stdio.js';
+import {evidencePdf,evidenceSentence} from './fixtures/evidence-pdf.js';
+test('production reference MCP separately locates the bibliography entry and the citation paragraph, and rejects a stale reference list',async t=>{
+ const root=await mkdtemp(join(tmpdir(),'reference-pdf-')),client=new Client({name:'reference-test',version:'1'}),transport=new StdioClientTransport({command:process.execPath,args:[resolve('dist/server/index.js')],env:{...process.env,CODEX_PDF_DATA_DIR:join(root,'profile'),CODEX_WORKSPACE_SETTINGS_DIR:join(root,'settings'),CODEX_LAYOUT_WORKSPACE:root}});await client.connect(transport);t.after(()=>client.close());
+ const call=async(name:string,args:any={})=>{const r=await client.callTool({name,arguments:args},undefined,{timeout:60000});assert.ok(!r.isError,JSON.stringify(r.content));return r as any;};
+ await call('pdf_workspace_list');const path=join(root,'paper.pdf');await writeFile(path,evidencePdf('Smith 2020 Research'));
+ const doc=(await call('pdf_workspace_import_path',{workspaceId:'default',path}))._meta.document,output=join(doc.projectDir,'mineru/runs/test/output');await mkdir(output,{recursive:true});
+ const paragraph=evidenceSentence+' (Smith, 2020).';
+ await writeFile(join(output,'document-mineru.md'),'# Method\n\n'+paragraph+'\n\n# References\n\nSmith 2020 Research');
+ await writeFile(join(output,'document-mineru.json'),JSON.stringify([{type:'text',text:paragraph,page_idx:1,bbox:[100,190,900,250]},{type:'ref_text',text:'Smith 2020 Research',page_idx:0,bbox:[100,70,800,160]}]));
+ await writeFile(join(doc.projectDir,'mineru/result.json'),JSON.stringify({directory:output,name:doc.name,pages:[{width:612,height:792},{width:612,height:792}],coordinateSpace:{pageBounds:[{sourceWidth:1000,sourceHeight:1000},{sourceWidth:1000,sourceHeight:1000}],documentSourceWidth:1000,documentSourceHeight:1000}}));
+ const reference=(await call('whiteboard_sources',{workspaceId:'default'})).structuredContent.sources.find((s:any)=>s.category==='reference');assert.ok(reference);
+ let view=(await call('whiteboard_create',{workspaceId:'default',title:'Reference',templateId:'free',expectedRevision:0,requestId:'create'})).structuredContent,boardId=view.board.id;
+ view=(await call('whiteboard_add_sources',{workspaceId:'default',boardId,sourceIds:[reference.id],expectedRevision:view.revision,requestId:'add'})).structuredContent;const nodeId=view.board.board.nodes[0].id,data=(await call('whiteboard_reference_read',{workspaceId:'default',sourceId:reference.id})).structuredContent;
+ const entry=(await call('pdf_source_locations',{workspaceId:'default',boardId,nodeId,referenceIndex:-1,referenceRevision:data.revision})).structuredContent.research;assert.equal(entry.locations.length,1);assert.equal(entry.locations[0].pageIndex,0);assert.equal(entry.locations[0].blockId,'b-1');
+ const located=(await call('pdf_source_locate',{workspaceId:'default',evidence:entry.locations[0]})).structuredContent.research;assert.ok(located.position.rects.length);assert.equal(located.position.pageIndex,0);
+ const citation=(await call('pdf_source_locations',{workspaceId:'default',boardId,nodeId,referenceIndex:0,referenceRevision:data.revision})).structuredContent.research;assert.equal(citation.locations[0].pageIndex,1);assert.equal(citation.locations[0].blockId,'b-0');
+ const changed=await client.callTool({name:'pdf_source_locations',arguments:{workspaceId:'default',boardId,nodeId,referenceIndex:0,referenceRevision:'f'.repeat(64)}});assert.equal(changed.isError,true);assert.match(JSON.stringify(changed.content),/引用列表已更新/);
+});

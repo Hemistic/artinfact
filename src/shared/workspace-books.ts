@@ -1,0 +1,28 @@
+// Original pdf-ai shell.js book palette and FNV-1a identity mapping.
+const DOCUMENT_COLOR_PALETTE = [
+	{ bg: '#2D5B8A', fg: '#FFFFFF', edge: '#173753' },
+	{ bg: '#8C3F3F', fg: '#FFF3DE', edge: '#572426' },
+	{ bg: '#2F6F5E', fg: '#F4FFF9', edge: '#17483D' },
+	{ bg: '#7B5A2F', fg: '#FFF1D3', edge: '#4B3419' },
+	{ bg: '#5B4B8A', fg: '#F6F0FF', edge: '#342957' },
+	{ bg: '#7A3D6D', fg: '#FFF0FA', edge: '#4B2343' },
+	{ bg: '#3E6B35', fg: '#F1FFE8', edge: '#24451F' },
+	{ bg: '#8A5630', fg: '#FFF0DE', edge: '#57341C' },
+	{ bg: '#355C73', fg: '#EFFAFF', edge: '#203948' },
+	{ bg: '#734A37', fg: '#FFF0E6', edge: '#462A20' },
+	{ bg: '#466A8F', fg: '#F2F8FF', edge: '#283F58' },
+	{ bg: '#A34D4F', fg: '#FFF4EA', edge: '#6B2B2E' },
+	{ bg: '#2E777D', fg: '#EFFFFF', edge: '#174A4E' },
+	{ bg: '#8B6B23', fg: '#FFF6D8', edge: '#584312' },
+	{ bg: '#4D5F2C', fg: '#F6FFD9', edge: '#303C19' },
+	{ bg: '#6D477D', fg: '#FAF0FF', edge: '#42294E' },
+	{ bg: '#3B7661', fg: '#F0FFF8', edge: '#214938' },
+	{ bg: '#9A5B73', fg: '#FFF2F7', edge: '#623446' },
+	{ bg: '#4F6686', fg: '#F4F8FF', edge: '#2F3D52' },
+	{ bg: '#6B6440', fg: '#FFF7DC', edge: '#423D25' },
+	{ bg: '#426B72', fg: '#F1FDFF', edge: '#274348' },
+	{ bg: '#805547', fg: '#FFF0E6', edge: '#513329' },
+	{ bg: '#5B6F3B', fg: '#F7FFE9', edge: '#384725' },
+	{ bg: '#6A5686', fg: '#F7F0FF', edge: '#403352' },
+];
+export function bookTheme(id: string, sourcePath: string, title: string) { const key=[id,sourcePath.toLowerCase(),title.toLowerCase()].filter(Boolean).join('|')||'document';let hash=2166136261;for(let i=0;i<key.length;i++){hash^=key.charCodeAt(i);hash=Math.imul(hash,16777619);}return DOCUMENT_COLOR_PALETTE[(hash>>>0)%DOCUMENT_COLOR_PALETTE.length]; }

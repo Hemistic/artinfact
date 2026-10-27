@@ -1,0 +1,11 @@
+{
+  "source": "User-owned pdf-ai source snapshot",
+  "files": {
+    "mineru-markdown-service.js": "04e665088f768ef0213ce483fa18f37c67fe960844efdad8d836763e7d06025c",
+    "mineru-layout-normalizer.js": "88d02c2602be1f9ef328df69b32006bd93cf02c565b3e50f6afb48ebc3d55b20",
+    "mineru-content-tree.js": "19fc8b37814fe1f1d932dbc7eb5fb5b05bad71624caa3e7f5c18374406303d94",
+    "pdf-project-store.js": "7987c44fde9b1606fd28faf8de09a8002d6fed595a3c5650d6f6e19f6c0ec43c",
+    "pdf-native-outline.js": "ee701b6a153a65af2ea03d0c76a281724369c1d8b203a3c3f6e54da9e4ab8f39"
+  },
+  "note": "Recovered unchanged provenance and component notices from the 0.13.43 distribution. Listed MinerU source hashes verified against the files in this repository."
+}

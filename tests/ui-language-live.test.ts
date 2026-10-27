@@ -1,0 +1,8 @@
+import test from'node:test';import assert from'node:assert/strict';import{JSDOM}from'jsdom';
+test('live language switching updates registered chrome without replacing controls, edits or new user content',async()=>{
+ const dom=new JSDOM('<main><button title="关闭"><span>关闭</span></button><p id="status">保存</p><input placeholder="笔记标题"></main>',{url:'https://example.com'}),keys=['window','document','NodeFilter','localStorage'],prior=keys.map(key=>Object.getOwnPropertyDescriptor(globalThis,key));keys.forEach(key=>Object.defineProperty(globalThis,key,{configurable:true,value:(dom.window as any)[key]}));
+ try{const{captureStaticChrome,setUiLanguage}=await import('../src/ui/ui-language.js');setUiLanguage('zh');const root=dom.window.document.querySelector('main')!,refresh=captureStaticChrome(root),button=root.querySelector('button')!,status=root.querySelector('#status')!,input=root.querySelector('input')!;input.value='我的未保存笔记';status.textContent='我的任务结果';const note=dom.window.document.createElement('p');note.textContent='工作区';root.append(note);let clicks=0;button.onclick=()=>clicks++;
+  setUiLanguage('en');refresh();assert.equal(button.textContent,'Close');assert.equal(button.title,'Close');assert.equal(input.value,'我的未保存笔记');assert.equal(note.textContent,'工作区');assert.equal(status.textContent,'我的任务结果');button.click();assert.equal(clicks,1);
+  setUiLanguage('zh');refresh();assert.equal(button.textContent,'关闭');assert.equal(root.querySelector('button'),button);assert.equal(input.value,'我的未保存笔记');
+ }finally{keys.forEach((key,i)=>{if(prior[i])Object.defineProperty(globalThis,key,prior[i]!);else Reflect.deleteProperty(globalThis,key);});dom.window.close();}
+});

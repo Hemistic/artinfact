@@ -1,0 +1,20 @@
+<style>
+body .wb-editor .wb-card[data-selected=true]{outline:2px solid var(--accent)!important;outline-offset:2px!important}
+.wb-editor .wb-inspector-actions{flex-wrap:nowrap}
+.wb-editor .wb-card-agent-actions{flex:none;min-width:0;margin:0}
+.wb-editor .wb-card-agent-actions>summary{list-style:none;cursor:pointer;padding:8px 9px;border-radius:6px;background:var(--soft);color:var(--accent);font-size:12px;white-space:nowrap}
+.wb-editor .wb-card-agent-actions>summary::-webkit-details-marker{display:none}
+.wb-editor .wb-card-ai-menu{position:absolute;right:8px;bottom:calc(100% + 6px);width:220px;max-width:calc(100% - 16px);max-height:55vh;overflow:auto;padding:7px;border:1px solid var(--line);border-radius:8px;background:var(--wb-card-surface);box-shadow:0 5px 20px #0002;z-index:10}
+.wb-editor .wb-card-agent-buttons{display:flex;flex-direction:column;gap:3px}
+.wb-editor .wb-card-agent-buttons button{white-space:nowrap;font-size:12px;padding:9px 10px;text-align:left;background:var(--wb-card-surface);color:var(--fg);border-radius:5px}
+.wb-editor .wb-card-agent-buttons button:hover:not(:disabled){background:var(--soft);color:var(--accent)}
+.wb-editor .wb-card-agent-status{display:flex;align-items:center;gap:5px;min-width:0;color:var(--muted)}
+.wb-editor .wb-card-agent-status small{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px}
+.wb-editor .wb-card-agent-status button{font-size:11px;padding:4px 6px;flex:none}
+.wb-reference-raw,.wb-reference-details details{margin:12px 0;font-size:13px;color:var(--muted)}
+.wb-reference-raw>summary,.wb-reference-details summary{cursor:pointer}
+.wb-reference-details .flow-markdown{font-size:14px;color:var(--fg);overflow-wrap:anywhere}
+.wb-reference-details button{font-size:12px;padding:6px 8px;color:var(--accent)}
+.wb-reference-details h3{font-size:14px;margin-top:20px}
+.wb-origin-badge[data-origin=reference]{background:#eef1e8;color:#758461}
+</style>

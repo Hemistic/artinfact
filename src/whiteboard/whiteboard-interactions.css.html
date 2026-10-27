@@ -1,0 +1,26 @@
+<style>
+.wb-editor .wb-card>.wb-port{position:absolute;z-index:8;width:24px;height:24px;padding:0!important;margin:0;border-radius:50%;background:transparent!important;box-shadow:none!important;cursor:crosshair;touch-action:none}
+.wb-port::before{content:'';position:absolute;width:9px;height:9px;border-radius:50%;left:7.5px;top:7.5px;background:var(--flow-color);box-shadow:0 0 0 3px var(--wb-card-surface);opacity:0;transition:opacity .12s ease}
+.wb-port[data-side=left]{left:-12px;top:calc(50% - 12px)}.wb-port[data-side=right]{right:-12px;top:calc(50% - 12px)}
+.wb-port[data-connected=true]::before,.wb-port[data-active=true]::before,.wb-port[data-target=true]::before,.wb-port:hover::before,.wb-port:focus-visible::before{opacity:1}
+.wb-port:hover::before,.wb-port:focus-visible::before{box-shadow:0 0 0 4px var(--soft)}
+.wb-editor{--wb-canvas-surface:#edf1f5;--wb-card-surface:#fff;--wb-card-selected:#f6f2ff;--wb-card-moving:#fff9ec;--wb-card-target:#dff4ee}
+.wb-editor,.wb-editor .flow-editor-body,.wb-editor .flow-work-area,.wb-editor .flow-editor-viewport{background-color:var(--wb-canvas-surface)!important}
+.wb-editor .flow-editor-viewport{background-image:radial-gradient(#c9d2dd .7px,transparent .7px)}
+body .wb-editor .wb-card{background:var(--wb-card-surface)!important;border:0!important;border-radius:18px;box-shadow:0 3px 14px #23344c12,0 12px 32px #23344c07}
+.wb-editor .wb-card[data-selected=true]{background:var(--wb-card-selected)!important;box-shadow:0 5px 20px #65529819,0 16px 36px #23344c0c}
+.wb-editor .wb-card[data-dragging=true]{background:var(--wb-card-moving)!important;box-shadow:0 12px 34px #23344c26,0 3px 12px #23344c14}
+.wb-editor .wb-card[data-connect-target=true]{background:var(--wb-card-target)!important;box-shadow:0 8px 28px #229e7a24}
+body[data-theme=dark] .wb-editor{--wb-canvas-surface:#171c24;--wb-card-surface:#29323e;--wb-card-selected:#37324b;--wb-card-moving:#3b3540;--wb-card-target:#234b45}
+body[data-theme=dark] .wb-editor .flow-editor-viewport{background-image:radial-gradient(#3b4554 .7px,transparent .7px)}
+.wb-connection-preview{position:absolute;inset:0;width:100%;height:100%;z-index:12;pointer-events:none;overflow:visible}.wb-connection-preview path{fill:none;stroke:var(--muted);stroke-width:1.6;stroke-dasharray:5 5;opacity:.7}.wb-connection-preview[data-valid=true] path{stroke:var(--accent);stroke-dasharray:none;opacity:.9}
+.wb-editor .wb-insert-panel{position:absolute;z-index:26;left:50%;bottom:92px;transform:translateX(-50%);width:360px;max-width:calc(100% - 32px);max-height:calc(100% - 176px);overflow:auto;padding:18px;background:color-mix(in srgb,var(--bg) 97%,transparent);border-radius:20px;box-shadow:0 12px 50px #252a361a;backdrop-filter:blur(18px);scrollbar-width:thin}
+.wb-insert-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.wb-insert-head strong{font-size:15px;font-weight:550}.wb-editor .wb-insert-head button{padding:2px;width:26px;height:26px;font-size:20px;background:transparent;color:var(--muted)}
+.wb-insert-actions{display:flex;gap:8px}.wb-editor .wb-insert-actions button{flex:1;padding:11px 8px;font-size:12px;background:var(--soft);color:var(--accent);border-radius:10px}.wb-insert-hint{font-size:11px;color:var(--muted);line-height:1.8;margin:12px 0 18px}.wb-insert-panel>small{font-size:11px;color:var(--muted)}
+.wb-editor .wb-insert-panel>input[type=search]{width:100%;padding:10px 12px;margin:10px 0 8px;background:var(--panel);font-size:12px;border-radius:10px;box-sizing:border-box}
+.wb-insert-sources{max-height:240px;overflow:auto}.wb-editor .wb-insert-source{display:flex;flex-direction:column;gap:5px;width:100%;text-align:left;background:transparent;padding:11px 12px;border-radius:10px;cursor:grab}.wb-editor .wb-insert-source:hover{background:var(--panel)}.wb-insert-source>small{font-size:10px;color:var(--muted)}.wb-insert-source>span{font-size:13px;line-height:1.65;overflow-wrap:anywhere}.wb-insert-sources>p{font-size:12px;color:var(--muted);text-align:center;padding:20px}
+.wb-insert-figures{margin-top:12px}.wb-insert-figures summary{font-size:12px;color:var(--muted);cursor:pointer;padding:10px 0}.wb-editor .wb-insert-figures button{display:flex;gap:10px;align-items:center;text-align:left;width:100%;font-size:11px;line-height:1.7;background:var(--panel);margin:7px 0;padding:8px;border-radius:10px}.wb-insert-figures img{width:80px;height:60px;object-fit:contain;background:white;border-radius:6px;flex-shrink:0}
+.wb-editor .flow-editor-viewport[data-drop-active=true]::after{content:'松开鼠标，添加到白板';position:absolute;top:84px;left:50%;transform:translateX(-50%);z-index:28;pointer-events:none;background:var(--soft);color:var(--accent);padding:12px 20px;border-radius:12px;box-shadow:0 6px 26px #25304712;font-size:13px}
+body[data-theme=dark] .wb-insert-panel{background:color-mix(in srgb,var(--panel) 97%,transparent);box-shadow:0 10px 40px #0004}
+@media(max-width:680px){.wb-editor .wb-insert-panel{bottom:86px;max-height:calc(100% - 170px)}}
+</style>

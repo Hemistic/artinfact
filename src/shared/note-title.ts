@@ -1,0 +1,2 @@
+export function fitNoteTitle(title:HTMLTextAreaElement){if(title.hidden||!title.isConnected)return;title.style.height='auto';title.style.height=title.scrollHeight+'px';}
+export function observeNoteTitle(title:HTMLTextAreaElement){let width=-1;const observer=new ResizeObserver(entries=>{const next=entries[0]?.contentRect.width??0;if(next!==width){width=next;fitNoteTitle(title);}});observer.observe(title);fitNoteTitle(title);return()=>observer.disconnect();}
