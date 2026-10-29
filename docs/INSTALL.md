@@ -5,7 +5,7 @@
 - Windows x64; this is the platform of the initial release artifact.
 - Node.js 22+ available as `node` in the desktop host's environment.
 - A desktop host with local stdio MCP support. MCP Apps and the corresponding host bridges are needed for the full interface and Agent/Pages interactions.
-- GitHub access to this private repository. Collaborators must be invited before cloning or downloading releases.
+- Access to the public [GitHub repository](https://github.com/Hemistic/artinfact) and its Releases page. No repository invitation is required.
 
 Check `node --version` in PowerShell. If Node was installed while the host was open, restart the host so it receives the updated PATH.
 
@@ -45,7 +45,7 @@ Check `node --version` in PowerShell. If Node was installed while the host was o
 
 6. Restart the desktop host, enable Artinfact, and ask: **Open my PDF research workspace.** Import the supplied `review-fixtures/artinfact-review-sample.pdf` to check basic reading before adding real research material.
 
-These commands match the locally installed CLI, whose installer subcommand is `plugin add`. On a host with different plugin controls, use its supported local marketplace flow. Do not replace live cache files manually. Private GitHub access is separate from OpenAI directory approval.
+These commands match the locally installed CLI, whose installer subcommand is `plugin add`. On a host with different plugin controls, use its supported local marketplace flow. Do not replace live cache files manually. Public GitHub availability is separate from OpenAI directory approval.
 
 The prebuilt plugin does not require `npm install` in the extracted runtime. Node.js is still required. Keep the extracted marketplace until the host no longer needs its source location.
 
@@ -95,7 +95,7 @@ Save your edits and back up your configured Artinfact workspace. Extract a new r
 | Old version after installation | Save edits, close the old panel, restart the host, and confirm which installation is enabled. |
 | No graphical UI in another MCP client | That client may support tools but lack MCP Apps or the required host bridges. |
 | MinerU fails | Inspect that document's processor run log and the processor settings; basic PDF reading should remain available. |
-| GitHub returns 404 | Sign in with the GitHub account invited to the private repository. |
+| GitHub returns 404 | Check the repository/release URL and network access. This repository is public and does not require an invitation. |
 
 Installation references checked 2026-10-27: [official plugin packaging and local marketplaces](https://developers.openai.com/plugins/build/plugins), [official MCP configuration](https://learn.chatgpt.com/docs/extend/mcp). Host capabilities and CLI versions can vary.
 

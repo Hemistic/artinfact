@@ -43,7 +43,7 @@ The existing focused checks remain in `tests/` for maintainers. Run relevant che
 2. Build and check the relevant behavior. Verify PDF opening and any changed interactions in the desktop host.
 3. Run `npm run verify:runtime` and `npm run package:github`.
 4. Inspect the ZIP and hashes, install into a separate local marketplace, and confirm the displayed version.
-5. Commit the source, tag the commit, and attach the built ZIP plus hash to a GitHub Release. Keep the repository private until the maintainer explicitly changes its audience.
+5. Commit the source, tag the commit, and attach the built ZIP plus hash to a GitHub Release. The maintainer authorized public distribution on 2026-10-29; keep private research data, credentials, and support correspondence outside the public repository.
 
 The packaging script uses explicit root entries, excludes development dependencies and user data, includes complete corresponding source and component notices, and rejects links or missing critical runtime files. GitHub source archives omit generated `dist/`; they are not ready-to-run plugin downloads.
 

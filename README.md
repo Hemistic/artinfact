@@ -8,7 +8,7 @@ A local PDF research workspace with Milkdown Markdown notes, connected whiteboar
 
 [中文说明](docs/README.zh-CN.md) · [Installation](docs/INSTALL.md) · [Development](docs/DEVELOPMENT.md) · [MCP integration](docs/MCP.md) · [Website](https://hemistic.github.io/artinfact-site/) · [Demo](https://hemistic.github.io/artinfact-site/tour.html)
 
-This repository is private while the project is being prepared for distribution. Repository access and release downloads require an invitation. GitHub distribution does not imply approval or listing in the OpenAI plugin directory.
+Artinfact is free and open source. This public repository includes the plugin, local MCP service, installation instructions, and corresponding source. GitHub distribution does not imply approval or listing in the OpenAI plugin directory.
 
 ## What it does
 
